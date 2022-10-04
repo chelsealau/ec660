@@ -26,6 +26,7 @@ public class Tuple implements Serializable {
     public Tuple(TupleDesc td) {
         // some code goes here
     	thisTD = td;
+    	tup = new Field[td.numFields()];
     	for (int i = 0; i < td.numFields(); i++) {
     		Type type = td.getFieldType(i); 
     		if (type == Type.INT_TYPE) {
@@ -77,6 +78,7 @@ public class Tuple implements Serializable {
      */
     public void setField(int i, Field f) {
         // some code goes here
+    	tup[i] = f;
     }
 
     /**
@@ -87,7 +89,7 @@ public class Tuple implements Serializable {
      */
     public Field getField(int i) {
         // some code goes here
-        return null;
+        return tup[i];
     }
 
     /**
@@ -100,7 +102,12 @@ public class Tuple implements Serializable {
      */
     public String toString() {
         // some code goes here
-        throw new UnsupportedOperationException("Implement this");
+    	String tupString = tup[0].toString();
+    	Iterator<Field> itr = this.fields();
+    	while (itr.hasNext()) {
+    		tupString += '\\' + ' ' + itr.next().toString();
+    	}
+        return tupString;
     }
 
     /**
@@ -110,14 +117,29 @@ public class Tuple implements Serializable {
     public Iterator<Field> fields()
     {
         // some code goes here
-        return null;
+    	Iterator<Field> fieldIterator = new Iterator<Field>() {
+    		private int currentIndex = 0;
+			@Override
+			public boolean hasNext() {
+				return thisTD.numFields() > currentIndex;
+			}
+
+			@Override
+			public Field next() {
+				return tup[currentIndex++];
+			}
+    	};
+    		
+        return fieldIterator;
     }
 
     /**
-     * reset the TupleDesc of thi tuple
+     * reset the TupleDesc of this tuple
      * */
     public void resetTupleDesc(TupleDesc td)
     {
         // some code goes here
+    	// IS THIS WHAT IT'S SUPPOSED TO DO??
+    	this.thisTD = td;
     }
 }
