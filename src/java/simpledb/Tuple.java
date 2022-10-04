@@ -3,6 +3,7 @@ package simpledb;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * Tuple maintains information about the contents of a tuple. Tuples have a
@@ -73,9 +74,19 @@ public class Tuple implements Serializable {
      *          index of the field to change. It must be a valid index.
      * @param f
      *          new value for the field.
+     * 
+     * @throws IllegalArgumentException
+     *                                  If the Field's type being passed doesn't
+     *                                  match the TupleDesc's type
+     * @throws NoSuchElementException
+     *                                  If the index is out of bounds
      */
-    public void setField(int i, Field f) {
+    public void setField(int i, Field f) throws IllegalArgumentException, NoSuchElementException {
         // some code goes here
+        Type currFieldType = thisTD.getFieldType(i);
+        if (currFieldType != f.getType()) {
+            throw new IllegalArgumentException("Field type does not match TupleDesc type");
+        }
         tup[i] = f;
     }
 
@@ -84,9 +95,14 @@ public class Tuple implements Serializable {
      *
      * @param i
      *          field index to return. Must be a valid index.
+     * 
+     * @throws NoSuchElementException If the index is out of bounds
      */
-    public Field getField(int i) {
+    public Field getField(int i) throws NoSuchElementException {
         // some code goes here
+        if (i < 0 || i >= thisTD.numFields()) {
+            throw new NoSuchElementException("Invalid field index");
+        }
         return tup[i];
     }
 
@@ -141,5 +157,15 @@ public class Tuple implements Serializable {
         // some code goes here
         // IS THIS WHAT IT'S SUPPOSED TO DO??
         this.thisTD = td;
+        tup = new Field[td.numFields()];
+        for (int i = 0; i < td.numFields(); i++) {
+            Type type = td.getFieldType(i);
+            if (type == Type.INT_TYPE) {
+                tup[i] = new IntField(0);
+            }
+            if (type == Type.STRING_TYPE) {
+                tup[i] = new StringField("", Type.STRING_LEN);
+            }
+        }
     }
 }
