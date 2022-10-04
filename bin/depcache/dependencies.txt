@@ -552,10 +552,12 @@ simpledb.BufferPool
 java.lang.String
 java.lang.reflect.Method
 java.io.PrintStream
+java.lang.invoke.MethodHandles$Lookup
 simpledb.Utility
 simpledb.DbFile
 simpledb.DbFileIterator
 simpledb.DbException
+java.lang.invoke.MethodHandles
 java.io.IOException
 java.lang.RuntimeException
 simpledb.HeapFileEncoder
@@ -564,9 +566,9 @@ simpledb.SimpleDb
 java.io.File
 java.lang.Exception
 java.lang.Object
-java.lang.StringBuilder
 java.lang.Class
 java.lang.ClassNotFoundException
+java.lang.invoke.StringConcatFactory
 simpledb.TransactionAbortedException
 ||:simpledb.Predicate$Op
 java.lang.IllegalStateException
