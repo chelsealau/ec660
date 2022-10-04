@@ -191,9 +191,13 @@ java.lang.Object
 java.util.NoSuchElementException
 simpledb.TransactionAbortedException
 ||:simpledb.HeapPageId
-java.lang.UnsupportedOperationException
+java.lang.invoke.MethodHandles$Lookup
+java.lang.invoke.MethodHandles
 simpledb.HeapPageId
 java.lang.Object
+java.lang.String
+java.lang.invoke.StringConcatFactory
+java.lang.Integer
 simpledb.PageId
 ||:simpledb.Tuple$1
 simpledb.Tuple
