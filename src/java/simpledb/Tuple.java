@@ -11,34 +11,32 @@ import java.util.Iterator;
  */
 public class Tuple implements Serializable {
 
-	Field[] tup;
-	int tupleno;
-	TupleDesc thisTD;
+    Field[] tup;
+    int tupleno;
+    TupleDesc thisTD;
     private static final long serialVersionUID = 1L;
 
     /**
      * Create a new tuple with the specified schema (type).
      *
      * @param td
-     *            the schema of this tuple. It must be a valid TupleDesc
-     *            instance with at least one field.
+     *           the schema of this tuple. It must be a valid TupleDesc
+     *           instance with at least one field.
      */
     public Tuple(TupleDesc td) {
         // some code goes here
-    	thisTD = td;
-    	tup = new Field[td.numFields()];
-    	for (int i = 0; i < td.numFields(); i++) {
-    		Type type = td.getFieldType(i); 
-    		if (type == Type.INT_TYPE) {
-    			tup[i] = new IntField(0);
-    		} 
-    		if (type == Type.STRING_TYPE) {
-    			tup[i] = new StringField("", Type.STRING_LEN);
-    		}
-    	}
-    	
-    	
-    	
+        thisTD = td;
+        tup = new Field[td.numFields()];
+        for (int i = 0; i < td.numFields(); i++) {
+            Type type = td.getFieldType(i);
+            if (type == Type.INT_TYPE) {
+                tup[i] = new IntField(0);
+            }
+            if (type == Type.STRING_TYPE) {
+                tup[i] = new StringField("", Type.STRING_LEN);
+            }
+        }
+
     }
 
     /**
@@ -72,20 +70,20 @@ public class Tuple implements Serializable {
      * Change the value of the ith field of this tuple.
      *
      * @param i
-     *            index of the field to change. It must be a valid index.
+     *          index of the field to change. It must be a valid index.
      * @param f
-     *            new value for the field.
+     *          new value for the field.
      */
     public void setField(int i, Field f) {
         // some code goes here
-    	tup[i] = f;
+        tup[i] = f;
     }
 
     /**
      * @return the value of the ith field, or null if it has not been set.
      *
      * @param i
-     *            field index to return. Must be a valid index.
+     *          field index to return. Must be a valid index.
      */
     public Field getField(int i) {
         // some code goes here
@@ -102,44 +100,46 @@ public class Tuple implements Serializable {
      */
     public String toString() {
         // some code goes here
-    	String tupString = tup[0].toString();
-    	Iterator<Field> itr = this.fields();
-    	while (itr.hasNext()) {
-    		tupString += '\\' + ' ' + itr.next().toString();
-    	}
+        String tupString = "";
+        Iterator<Field> itr = this.fields();
+        while (itr.hasNext()) {
+            tupString += itr.next().toString();
+            if (itr.hasNext()) {
+                tupString += ' ';
+            }
+        }
         return tupString;
     }
 
     /**
      * @return
-     *        An iterator which iterates over all the fields of this tuple
-     * */
-    public Iterator<Field> fields()
-    {
+     *         An iterator which iterates over all the fields of this tuple
+     */
+    public Iterator<Field> fields() {
         // some code goes here
-    	Iterator<Field> fieldIterator = new Iterator<Field>() {
-    		private int currentIndex = 0;
-			@Override
-			public boolean hasNext() {
-				return thisTD.numFields() > currentIndex;
-			}
+        Iterator<Field> fieldIterator = new Iterator<Field>() {
+            private int currentIndex = 0;
 
-			@Override
-			public Field next() {
-				return tup[currentIndex++];
-			}
-    	};
-    		
+            @Override
+            public boolean hasNext() {
+                return thisTD.numFields() > currentIndex;
+            }
+
+            @Override
+            public Field next() {
+                return tup[currentIndex++];
+            }
+        };
+
         return fieldIterator;
     }
 
     /**
      * reset the TupleDesc of this tuple
-     * */
-    public void resetTupleDesc(TupleDesc td)
-    {
+     */
+    public void resetTupleDesc(TupleDesc td) {
         // some code goes here
-    	// IS THIS WHAT IT'S SUPPOSED TO DO??
-    	this.thisTD = td;
+        // IS THIS WHAT IT'S SUPPOSED TO DO??
+        this.thisTD = td;
     }
 }
