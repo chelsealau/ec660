@@ -12,9 +12,9 @@ import java.util.NoSuchElementException;
  */
 public class Tuple implements Serializable {
 
-    Field[] tup;
-    int tupleno;
-    TupleDesc thisTD;
+    private Field[] tup;
+    private RecordId rid;
+    private TupleDesc thisTD;
     private static final long serialVersionUID = 1L;
 
     /**
@@ -53,8 +53,8 @@ public class Tuple implements Serializable {
      *         be null.
      */
     public RecordId getRecordId() {
-        // some code goes here
-        return null;
+        // some code goes here (__done__)
+        return rid;
     }
 
     /**
@@ -64,7 +64,8 @@ public class Tuple implements Serializable {
      *            the new RecordId for this tuple.
      */
     public void setRecordId(RecordId rid) {
-        // some code goes here
+        // some code goes here (__done__)
+        this.rid = rid;
     }
 
     /**
@@ -82,7 +83,7 @@ public class Tuple implements Serializable {
      *                                  If the index is out of bounds
      */
     public void setField(int i, Field f) throws IllegalArgumentException, NoSuchElementException {
-        // some code goes here
+        // some code goes here (__done__)
         Type currFieldType = thisTD.getFieldType(i);
         if (currFieldType != f.getType()) {
             throw new IllegalArgumentException("Field type does not match TupleDesc type");
@@ -99,7 +100,7 @@ public class Tuple implements Serializable {
      * @throws NoSuchElementException If the index is out of bounds
      */
     public Field getField(int i) throws NoSuchElementException {
-        // some code goes here
+        // some code goes here (__done__)
         if (i < 0 || i >= thisTD.numFields()) {
             throw new NoSuchElementException("Invalid field index");
         }
@@ -115,7 +116,7 @@ public class Tuple implements Serializable {
      * where \t is any whitespace (except a newline)
      */
     public String toString() {
-        // some code goes here
+        // some code goes here (__done__)
         String tupString = "";
         Iterator<Field> itr = this.fields();
         while (itr.hasNext()) {
@@ -132,7 +133,7 @@ public class Tuple implements Serializable {
      *         An iterator which iterates over all the fields of this tuple
      */
     public Iterator<Field> fields() {
-        // some code goes here
+        // some code goes here (__done__)
         Iterator<Field> fieldIterator = new Iterator<Field>() {
             private int currentIndex = 0;
 
@@ -154,8 +155,7 @@ public class Tuple implements Serializable {
      * reset the TupleDesc of this tuple
      */
     public void resetTupleDesc(TupleDesc td) {
-        // some code goes here
-        // IS THIS WHAT IT'S SUPPOSED TO DO??
+        // some code goes here (__done__)
         this.thisTD = td;
         tup = new Field[td.numFields()];
         for (int i = 0; i < td.numFields(); i++) {
