@@ -64,18 +64,21 @@ public class Catalog {
             existingDetails.tableName = name;
             existingDetails.tablePKey = pkeyField;
         } else {
-            directory.forEach((tableId, tableDetails) -> {
-                // check if naming conflict exists
-                if (tableDetails.tableName.equals(name)) {
-                    tableDetails.dbFile = file;
-                    tableDetails.tablePKey = pkeyField;
-                    return;
+            for (Map.Entry<Integer, TableDesc> entry : directory.entrySet()) {
+                int currKey = entry.getKey();
+                TableDesc currDetails = entry.getValue();
+                if (currDetails.tableName.equals(name) && currKey != newTableID) {
+                    // name conflict resolution
+                    directory.remove(currKey);
+
+                    currDetails.dbFile = file;
+                    currDetails.tablePKey = pkeyField;
+                    directory.put(newTableID, currDetails);
                 }
-            });
+            }
             // no identical ids or naming conflicts found, so simply add
             directory.put(file.getId(), new TableDesc(file, name, pkeyField));
         }
-
     }
 
     public void addTable(DbFile file, String name) {
@@ -101,7 +104,6 @@ public class Catalog {
      * @throws NoSuchElementException if the table doesn't exist
      */
     public int getTableId(String name) throws NoSuchElementException {
-        // some code goes here
         for (Map.Entry<Integer, TableDesc> entry : directory.entrySet()) {
             if (entry.getValue().tableName.equals(name)) {
                 return entry.getKey();
