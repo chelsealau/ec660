@@ -31,6 +31,12 @@ public class HeapFileIterator extends AbstractDbFileIterator {
   }
 
   @Override
+  public void close() {
+    this.isOpen = false;
+    super.close();
+  }
+
+  @Override
   public void rewind() throws DbException, TransactionAbortedException {
     if (!isOpen) {
       return;
