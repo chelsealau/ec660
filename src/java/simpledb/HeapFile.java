@@ -18,7 +18,7 @@ public class HeapFile implements DbFile {
 
     private File systemFile;
     private TupleDesc fileTupleDesc;
-    private ConcurrentHashMap<HeapPageId, HeapPage> pageDirectory;
+    private ConcurrentHashMap<HeapPageId, byte[]> pageDirectory;
 
     /**
      * Constructs a heap file backed by the specified file.
@@ -31,25 +31,30 @@ public class HeapFile implements DbFile {
         // some code goes here
         systemFile = f;
         fileTupleDesc = td;
-        pageDirectory = new ConcurrentHashMap<HeapPageId, HeapPage>();
+        pageDirectory = new ConcurrentHashMap<HeapPageId, byte[]>();
 
         FileInputStream sysFileReader = null;
         byte[] pageBuffer = HeapPage.createEmptyPageData();
         int allocatedPages = 0;
         try {
             sysFileReader = new FileInputStream(f);
-            // Ensure the file is not empty
-            if (sysFileReader.available() > 0) {
-                // Read a page's worth of data into the bucket
-                while (sysFileReader.read(pageBuffer) != -1) {
-                    HeapPageId newPageId = new HeapPageId(getId(), allocatedPages);
-                    HeapPage newPage = new HeapPage(newPageId, pageBuffer);
-                    pageDirectory.put(newPageId, newPage);
-                    allocatedPages++;
-                }
+            // Read a page's worth of data into the bucket
+            while (sysFileReader.read(pageBuffer) != -1) {
+                HeapPageId newPageId = new HeapPageId(getId(), allocatedPages);
+                pageDirectory.put(newPageId, pageBuffer);
+                allocatedPages++;
             }
             sysFileReader.close();
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
+            if (sysFileReader != null) {
+                try {
+                    sysFileReader.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+            e.printStackTrace(); // Should never happen in this simpleDB
+        } catch (IOException e) {
             if (sysFileReader != null) {
                 try {
                     sysFileReader.close();
@@ -98,10 +103,16 @@ public class HeapFile implements DbFile {
     // see DbFile.java for javadocs
     public Page readPage(PageId pid) throws IllegalArgumentException {
         // some code goes here (__done__)
-        if (!pageDirectory.containsKey(pid)) {
+        final HeapPageId heapPageId = (HeapPageId) pid;
+        if (!pageDirectory.containsKey(heapPageId)) {
             throw new IllegalArgumentException("PageId " + pid + " does not exist in this HeapFile");
         }
-        return pageDirectory.get(pid);
+        try {
+            return new HeapPage(heapPageId, pageDirectory.get(heapPageId));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     // see DbFile.java for javadocs

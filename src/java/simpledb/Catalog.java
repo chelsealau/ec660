@@ -74,10 +74,11 @@ public class Catalog {
                     currDetails.dbFile = file;
                     currDetails.tablePKey = pkeyField;
                     directory.put(newTableID, currDetails);
+                    return;
                 }
             }
             // no identical ids or naming conflicts found, so simply add
-            directory.put(file.getId(), new TableDesc(file, name, pkeyField));
+            directory.put(newTableID, new TableDesc(file, name, pkeyField));
         }
     }
 
@@ -109,7 +110,7 @@ public class Catalog {
                 return entry.getKey();
             }
         }
-        throw new NoSuchElementException("Table does not exist");
+        throw new NoSuchElementException("Table '" + name + "' does not exist");
     }
 
     /**
@@ -121,7 +122,7 @@ public class Catalog {
      */
     public TupleDesc getTupleDesc(int tableid) throws NoSuchElementException {
         if (!this.directory.containsKey(tableid)) {
-            throw new NoSuchElementException("Table does not exist");
+            throw new NoSuchElementException("getTupleDesc | Table '" + tableid + "' does not exist");
         }
         return this.directory.get(tableid).dbFile.getTupleDesc();
     }
@@ -136,7 +137,7 @@ public class Catalog {
      */
     public DbFile getDatabaseFile(int tableid) throws NoSuchElementException {
         if (!this.directory.containsKey(tableid)) {
-            throw new NoSuchElementException("Table does not exist");
+            throw new NoSuchElementException("getDatabaseFile | Table '" + tableid + "' does not exist");
         }
         return this.directory.get(tableid).dbFile;
     }
@@ -151,7 +152,7 @@ public class Catalog {
      */
     public String getPrimaryKey(int tableid) throws NoSuchElementException {
         if (!this.directory.containsKey(tableid)) {
-            throw new NoSuchElementException("Table does not exist");
+            throw new NoSuchElementException("getPrimaryKey | Table '" + tableid + "' does not exist");
         }
         return this.directory.get(tableid).tablePKey;
     }
@@ -172,7 +173,7 @@ public class Catalog {
     public String getTableName(int id) throws NoSuchElementException {
         // some code goes here (__done__)
         if (!this.directory.containsKey(id)) {
-            throw new NoSuchElementException("Table does not exist");
+            throw new NoSuchElementException("getTableName | Table '" + id + "' does not exist");
         }
         return this.directory.get(id).tableName;
     }
@@ -202,7 +203,6 @@ public class Catalog {
             while ((line = br.readLine()) != null) {
                 // assume line is of the format name (field type, field type, ...)
                 String name = line.substring(0, line.indexOf("(")).trim();
-                // System.out.println("TABLE NAME: " + name);
                 String fields = line.substring(line.indexOf("(") + 1, line.indexOf(")")).trim();
                 String[] els = fields.split(",");
                 ArrayList<String> names = new ArrayList<String>();
