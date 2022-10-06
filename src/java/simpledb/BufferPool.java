@@ -72,9 +72,11 @@ public class BufferPool {
     	if (bp.contains(pid)) {
     		return bp.get(pid);
     	}
-    	DbFile 
-    	bp.put(pid, )
-        return null;
+    	final int tableID = pid.getTableId();
+    	final DbFile dbFile = Database.getCatalog().getDatabaseFile(tableID);
+    	Page newP = dbFile.readPage(pid);
+    	bp.put(pid, newP);
+        return bp.get(pid);
     }
 
     /**
