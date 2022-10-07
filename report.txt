@@ -1,0 +1,91 @@
+﻿EC660 Programming Assignment 1 Write Up
+Authors: Cameron Cipriano and Chelsea Lau
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Design Decisions
+
+
+Since the assignment was structured such that we were implementing skeleton methods in existing files, there was not much room to make design decisions. However, the data structures we chose for each component of the SimpleDB was up to our discretion. For a Tuple, we chose to utilize an array to store Field objects. For the TupleDesc, we also used an array to store TDItem objects. For the Catalog and BufferPool, a ConcurrentHashMap was selected since it provides much faster (significantly less I/O operations) look up times than a LinkedList or ArrayList counterpart, while also providing thread safety in a highly concurrent system. 
+
+
+The database Catalog is a ConcurrentHashMap mapping (DbFileId)s to (TableDesc)s, and the BufferPool is a ConcurrentHashMap mapping (PageId)s, to (Page)s
+Changes to API
+* TableDesc class
+* HeapFileIterator class 
+* Creating new iterators for tuple, tupleDesc
+
+
+The first change we made to the API was adding a TableDesc class, whose purpose was solely encapsulating the data present inside the catalog, such that a ConcurrentHashMap could be used. The TableDesc class packages a DbFile, table’s name, and table’s primary key in an entirely public manner. All member variables are accessible via any class to facilitate ease of access.
+
+
+The biggest change to the API we made was adding a HeapFileIterator class. This class extends the AbstractDbFileIterator and overrides the open(), close(), rewind(), and readNext() methods of the AbstractDbFileIterator and the DbFileIterator interface. It also provides the additional helper method moveToNextPage that moves the iterator to the next page of the HeapFile. 
+
+
+Similarly, in order to implement the iterators of Tuple and TupleDesc, the methods of the Iterator interface were overridden. This includes the hasNext() and next() methods. 
+Missing/Incomplete Elements of Code
+
+
+Other than the skeleton methods that were not required for Lab 1, there are no missing or incomplete elements of code. 
+Time Spent on Assignment/Areas of Struggle
+* HeapPage
+* HeapFileIterator
+
+
+One week was spent completing this assignment. There were two main areas of struggle: completing the skeleton methods in HeapPage and HeapFileIterator. Understanding how to identify the unused slots on a page was the most difficult component within HeapPage, as this required figuring out how to translate the indices of the unused slots into the header bytes and individual bits of the HeapPage. The final solution required us to split the header into bytes, identify which byte the desired index was in, and perform a bitwise AND between the byte and a 1 shifted by the desired index % (index of the first bit in the byte), which gave us the bit corresponding to the index relative to the byte it was in.
+
+
+The second area that we struggled with was executing HeapFileIterator. All of  SeqScan’s tests (testSmall, testCache, testRewind) were failing because when moving from one page to another, the same data was being scanned. A column number of 1 worked for testSmall presumably because all of the tuples could fit into one page, negating the need for the iterator to move to another page. A column number of 1 also worked for testCache up until the last tuple. 
+
+
+In order to resolve this, we found a few sources of error. The first was in our HeapFile constructor, which was trying to divide the bytes of the file into pages up front to reduce runtime, but needed simplification. Another issue we found was in our isSlotUsed method in the HeapPage implementation, which was not using the correct shift amount for indices that fell into header byte 1 (with zero-based numbering). Our iterator also required a rewrite to minimize complexity and reduce possibility of errors. Finally, the BufferPool was mistakenly checking to see if the key was a value in the ConcurrentHashMap instead of a key (contains vs containsKey). After resolving all of these issues, all of the tests within SeqScan passed.
+Workload Division
+
+
+Exercises 1 and 3 were completed by Chelsea and exercises 2, 4, and 5 were completed by Cameron. Exercise 6 was completed together and Chelsea completed the write up.
+References: 
+https://www.delftstack.com/howto/java/custom-iterator-java/#:~:text=A%20custom%20iterator%20in%20Java%20can%20help%20the%20developers%20solve,next()%20%2C%20and%20remove()%20.
+https://www.tutorialspoint.com/java/java_using_iterator.htm
+https://javaconceptoftheday.com/how-to-check-the-equality-of-two-arrays-in-java/
+https://www.tutorialkart.com/java/java-array/java-check-if-array-is-empty/#:~:text=To%20check%20if%20an%20array,check%20if%20array%20is%20null.&text=The%20array%20is%20empty.,-Example%202%20%E2%80%93%20Check
