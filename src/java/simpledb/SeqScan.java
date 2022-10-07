@@ -19,8 +19,7 @@ public class SeqScan implements DbIterator {
     private int tableid;
     private String tableAlias;
     private HeapFile tableFile;
-
-    private HeapFileIterator heapFileIterator;
+    private DbFileIterator tableIterator;
 
     /**
      * Creates a sequential scan over the specified table as a part of the
@@ -47,7 +46,7 @@ public class SeqScan implements DbIterator {
         this.tableid = tableid;
         this.tableAlias = tableAlias;
         this.tableFile = (HeapFile) Database.getCatalog().getDatabaseFile(tableid);
-        this.heapFileIterator = new HeapFileIterator(tableFile, tid);
+        this.tableIterator = tableFile.iterator(tid);
     }
 
     /**
@@ -64,15 +63,15 @@ public class SeqScan implements DbIterator {
      * @return Return the alias of the table this operator scans.
      */
     public String getAlias() {
-        // some code goes here
-        return null;
+        // some code goes here (__done__)
+        return tableAlias;
     }
 
     /**
      * Reset the tableid, and tableAlias of this operator.
      * 
      * @param tableid
-     *                   the table to scan.
+     *                   the table to scan.a
      * @param tableAlias
      *                   the alias of this table (needed by the parser); the
      *                   returned
@@ -88,7 +87,7 @@ public class SeqScan implements DbIterator {
         this.tableid = tableid;
         this.tableAlias = tableAlias;
         this.tableFile = (HeapFile) Database.getCatalog().getDatabaseFile(tableid);
-        this.heapFileIterator = new HeapFileIterator(tableFile, tid);
+        this.tableIterator = tableFile.iterator(tid);
     }
 
     public SeqScan(TransactionId tid, int tableid) {
@@ -97,7 +96,7 @@ public class SeqScan implements DbIterator {
 
     public void open() throws DbException, TransactionAbortedException {
         // some code goes here (__done__)
-        heapFileIterator.open();
+        tableIterator.open();
     }
 
     /**
@@ -127,23 +126,23 @@ public class SeqScan implements DbIterator {
 
     public boolean hasNext() throws TransactionAbortedException, DbException {
         // some code goes here (__done__)
-        return heapFileIterator.hasNext();
+        return tableIterator.hasNext();
     }
 
     public Tuple next() throws NoSuchElementException,
             TransactionAbortedException, DbException {
         // some code goes here (__done__)
-        return heapFileIterator.next();
+        return tableIterator.next();
     }
 
     public void close() {
         // some code goes here (__done__)
-        heapFileIterator.close();
+        tableIterator.close();
     }
 
     public void rewind() throws DbException, NoSuchElementException,
             TransactionAbortedException {
         // some code goes here (__done__)
-        heapFileIterator.rewind();
+        tableIterator.rewind();
     }
 }
