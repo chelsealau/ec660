@@ -35,7 +35,7 @@ public class TupleDesc implements Serializable {
         }
 
         public String toString() {
-            return fieldName + "(" + fieldType + ")";
+            return fieldType + "(" + fieldName + ")";
         }
     }
 
@@ -277,10 +277,13 @@ public class TupleDesc implements Serializable {
     public String toString() {
         // some code goes here
         // use iterator to add all tdItems into list or something then print them all?
-        String desc = tdArray[0].toString();
+        String desc = "";
         Iterator<TDItem> itr = this.iterator();
         while (itr.hasNext()) {
             desc += itr.next().toString();
+            if (itr.hasNext()) {
+                desc += ", ";
+            }
         }
         return desc;
     }

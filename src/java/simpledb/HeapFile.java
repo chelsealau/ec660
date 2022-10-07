@@ -16,8 +16,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class HeapFile implements DbFile {
 
-    private File systemFile;
-    private TupleDesc fileTupleDesc;
+    private final File systemFile;
+    private final TupleDesc fileTupleDesc;
+    private final int tableid;
+    private DbFileIterator iterator;
     private ConcurrentHashMap<HeapPageId, byte[]> pageDirectory;
 
     /**
@@ -31,16 +33,17 @@ public class HeapFile implements DbFile {
         // some code goes here
         systemFile = f;
         fileTupleDesc = td;
+        tableid = f.getAbsoluteFile().hashCode();
         pageDirectory = new ConcurrentHashMap<HeapPageId, byte[]>();
 
-        FileInputStream sysFileReader = null;
-        byte[] pageBuffer = HeapPage.createEmptyPageData();
+        BufferedInputStream sysFileReader = null;
         int allocatedPages = 0;
         try {
-            sysFileReader = new FileInputStream(f);
+            sysFileReader = new BufferedInputStream(new FileInputStream(f));
             // Read a page's worth of data into the bucket
+            byte[] pageBuffer = HeapPage.createEmptyPageData();
             while (sysFileReader.read(pageBuffer) != -1) {
-                HeapPageId newPageId = new HeapPageId(getId(), allocatedPages);
+                HeapPageId newPageId = new HeapPageId(tableid, allocatedPages);
                 pageDirectory.put(newPageId, pageBuffer);
                 allocatedPages++;
             }
@@ -87,7 +90,7 @@ public class HeapFile implements DbFile {
      */
     public int getId() {
         // some code goes here (__done__)
-        return systemFile.getAbsoluteFile().hashCode();
+        return tableid;
     }
 
     /**
@@ -103,16 +106,29 @@ public class HeapFile implements DbFile {
     // see DbFile.java for javadocs
     public Page readPage(PageId pid) throws IllegalArgumentException {
         // some code goes here (__done__)
-        final HeapPageId heapPageId = (HeapPageId) pid;
-        if (!pageDirectory.containsKey(heapPageId)) {
-            throw new IllegalArgumentException("PageId " + pid + " does not exist in this HeapFile");
+        if (pid.getTableId() != tableid) {
+            throw new IllegalArgumentException("PageId does not belong to this HeapFile");
         }
+        final int pageNum = pid.pageNumber();
+        final int pageSize = BufferPool.getPageSize();
+        byte[] pageBuffer = HeapPage.createEmptyPageData();
+        Page heapPageRead = null;
         try {
-            return new HeapPage(heapPageId, pageDirectory.get(heapPageId));
+            final BufferedInputStream sysFileReader = new BufferedInputStream(new FileInputStream(systemFile));
+            final int bytesToSkip = pageNum * pageSize;
+            sysFileReader.skip(bytesToSkip);
+            sysFileReader.read(pageBuffer);
+            sysFileReader.close();
+            heapPageRead = new HeapPage((HeapPageId) pid, pageBuffer);
+            return heapPageRead;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return heapPageRead;
     }
 
     // see DbFile.java for javadocs
@@ -125,7 +141,7 @@ public class HeapFile implements DbFile {
      * Returns the number of pages in this HeapFile.
      */
     public int numPages() {
-        return pageDirectory.size();
+        return (int) (systemFile.length() / BufferPool.getPageSize());
     }
 
     // see DbFile.java for javadocs
@@ -147,7 +163,10 @@ public class HeapFile implements DbFile {
     // see DbFile.java for javadocs
     public DbFileIterator iterator(TransactionId tid) {
         // some code goes here
-        return new HeapFileIterator(this, tid);
+        if (iterator == null) {
+            iterator = new HeapFileIterator(this, tid);
+        }
+        return iterator;
     }
 
 }

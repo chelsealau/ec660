@@ -8,81 +8,58 @@ import java.util.Iterator;
 public class HeapFileIterator extends AbstractDbFileIterator {
 
   // Members to access data
-  private HeapFile hf;
-  private TransactionId tid;
-
-  // State variables
-  private boolean isOpen = false;
-  private int currPageNum = 0;
-
-  private HeapPageId currPageId;
-  private HeapPage currPage;
+  private final HeapFile heapFile;
+  private final TransactionId tid;
   private Iterator<Tuple> tupleIterator;
+  private int currPageNum;
 
-  HeapFileIterator(HeapFile heapFile, TransactionId tid) {
-    this.hf = heapFile;
+  HeapFileIterator(HeapFile hf, TransactionId tid) {
+    this.heapFile = hf;
     this.tid = tid;
   }
 
   @Override
   public void open() throws DbException, TransactionAbortedException {
-    this.isOpen = true;
-    this.currPageId = new HeapPageId(hf.getId(), currPageNum);
+    currPageNum = 0;
+    final PageId pid = new HeapPageId(heapFile.getId(), currPageNum);
+    final HeapPage page = (HeapPage) Database.getBufferPool().getPage(tid, pid, Permissions.READ_ONLY);
+    tupleIterator = page.iterator();
   }
 
   @Override
   public void close() {
-    this.isOpen = false;
+    tupleIterator = null;
     super.close();
+    System.out.println("Number of pages in HeapFile: " + heapFile.numPages());
   }
 
   @Override
   public void rewind() throws DbException, TransactionAbortedException {
-    if (!isOpen) {
-      return;
-    }
-
-    currPageNum = 0;
-    currPageId = new HeapPageId(hf.getId(), currPageNum);
-    currPage = (HeapPage) Database.getBufferPool().getPage(tid, currPageId, Permissions.READ_ONLY);
-    tupleIterator = currPage.iterator();
+    open();
   }
 
   @Override
   protected Tuple readNext() throws DbException, TransactionAbortedException {
-    if (!isOpen) {
+    if (tupleIterator == null) {
       return null;
     }
 
-    // Initialize currPage if this is the first time calling readNext()
-    if (currPage == null) {
-      currPage = (HeapPage) Database.getBufferPool().getPage(tid, currPageId, Permissions.READ_ONLY);
-      tupleIterator = currPage.iterator();
-    }
-
     if (tupleIterator.hasNext()) {
-      System.out.println("tupleIterator.hasNext()");
       return tupleIterator.next();
+    } else {
+      tupleIterator = moveToNextPage();
     }
-
-    // If we reach here, we have exhausted the current page
-    System.out.println("EXHAUSTED PAGE... Max Pages: " + hf.numPages() + " | currPageNum: " + currPageNum);
-    while (!tupleIterator.hasNext() && currPageNum < hf.numPages() - 1) {
-      moveToNextPage();
-    }
-    if (currPageNum < hf.numPages() - 1) {
-      return tupleIterator.next();
-    }
-
-    // No more tuples exist since the currPageNum >= hf.numPages() - 1
-    return null;
+    return readNext();
   }
 
-  private void moveToNextPage() throws DbException, TransactionAbortedException {
-    currPageNum++;
-    System.out.println("MOVING TO NEXT PAGE: " + currPageNum);
-    currPageId = new HeapPageId(hf.getId(), currPageNum);
-    currPage = (HeapPage) Database.getBufferPool().getPage(tid, currPageId, Permissions.READ_ONLY);
-    tupleIterator = currPage.iterator();
+  private Iterator<Tuple> moveToNextPage() throws DbException, TransactionAbortedException {
+    if (currPageNum + 1 < heapFile.numPages()) {
+      currPageNum++;
+      final PageId pid = new HeapPageId(heapFile.getId(), currPageNum);
+      final HeapPage page = (HeapPage) Database.getBufferPool().getPage(tid, pid, Permissions.READ_ONLY);
+      return page.iterator();
+    } else {
+      return null;
+    }
   }
 }

@@ -79,6 +79,22 @@ public class HeapFileReadTest extends SimpleDbTestBase {
     }
 
     @Test
+    public void failBeforeOpen() throws Exception {
+        HeapFile smallFile = SystemTestUtil.createRandomHeapFile(2, 3, null,
+                null);
+
+        DbFileIterator it = smallFile.iterator(tid);
+        // Not open yet
+        assertFalse(it.hasNext());
+        try {
+            it.next();
+            fail("expected exception");
+        } catch (NoSuchElementException e) {
+            it.close();
+        }
+    }
+
+    @Test
     public void testIteratorBasic() throws Exception {
         HeapFile smallFile = SystemTestUtil.createRandomHeapFile(2, 3, null,
                 null);

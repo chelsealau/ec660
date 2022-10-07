@@ -71,12 +71,13 @@ public class BufferPool {
     public Page getPage(TransactionId tid, PageId pid, Permissions perm)
             throws TransactionAbortedException, DbException {
         // some code goes here
-        if (bp.contains(pid)) {
+        if (bp.containsKey(pid)) {
             return bp.get(pid);
         }
         final int tableID = pid.getTableId();
         final DbFile dbFile = Database.getCatalog().getDatabaseFile(tableID);
         Page newP = dbFile.readPage(pid);
+        System.out.println("Adding new page to buffer pool: " + pid);
         bp.put(pid, newP);
         return bp.get(pid);
     }

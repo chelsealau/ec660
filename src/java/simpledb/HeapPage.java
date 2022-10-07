@@ -323,7 +323,7 @@ public class HeapPage implements Page {
         // need i + 1 because bytes not 0-indexed
         final int headerByte = (int) (Math.ceil((i + 1) / 8.0) - 1);
         int shiftAmt = 0;
-        if (headerByte > 1) {
+        if (headerByte >= 1) {
             shiftAmt = i % (headerByte * 8);
         } else {
             shiftAmt = i;
