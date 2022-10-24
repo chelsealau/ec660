@@ -3,7 +3,6 @@ package simpledb;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 /**
  * Tuple maintains information about the contents of a tuple. Tuples have a
@@ -12,40 +11,29 @@ import java.util.NoSuchElementException;
  */
 public class Tuple implements Serializable {
 
-    private Field[] tup;
-    private RecordId rid;
-    private TupleDesc thisTD;
     private static final long serialVersionUID = 1L;
+
+    private transient RecordId rid; // source on disk -- may be null
+    private Field fields[];
+    private transient TupleDesc td;
 
     /**
      * Create a new tuple with the specified schema (type).
      *
      * @param td
-     *           the schema of this tuple. It must be a valid TupleDesc
-     *           instance with at least one field.
+     *            the schema of this tuple. It must be a valid TupleDesc
+     *            instance with at least one field.
      */
     public Tuple(TupleDesc td) {
-        // some code goes here
-        thisTD = td;
-        tup = new Field[td.numFields()];
-        for (int i = 0; i < td.numFields(); i++) {
-            Type type = td.getFieldType(i);
-            if (type == Type.INT_TYPE) {
-                tup[i] = new IntField(0);
-            }
-            if (type == Type.STRING_TYPE) {
-                tup[i] = new StringField("", Type.STRING_LEN);
-            }
-        }
-
+        fields = new Field[td.numFields()];
+        this.td = td;
     }
 
     /**
      * @return The TupleDesc representing the schema of this tuple.
      */
     public TupleDesc getTupleDesc() {
-        // some code goes here
-        return thisTD;
+        return td;
     }
 
     /**
@@ -53,7 +41,6 @@ public class Tuple implements Serializable {
      *         be null.
      */
     public RecordId getRecordId() {
-        // some code goes here (__done__)
         return rid;
     }
 
@@ -64,7 +51,6 @@ public class Tuple implements Serializable {
      *            the new RecordId for this tuple.
      */
     public void setRecordId(RecordId rid) {
-        // some code goes here (__done__)
         this.rid = rid;
     }
 
@@ -72,39 +58,25 @@ public class Tuple implements Serializable {
      * Change the value of the ith field of this tuple.
      *
      * @param i
-     *          index of the field to change. It must be a valid index.
+     *            index of the field to change. It must be a valid index.
      * @param f
-     *          new value for the field.
-     * 
-     * @throws IllegalArgumentException
-     *                                  If the Field's type being passed doesn't
-     *                                  match the TupleDesc's type
-     * @throws NoSuchElementException
-     *                                  If the index is out of bounds
+     *            new value for the field.
      */
-    public void setField(int i, Field f) throws IllegalArgumentException, NoSuchElementException {
-        // some code goes here (__done__)
-        Type currFieldType = thisTD.getFieldType(i);
-        if (currFieldType != f.getType()) {
-            throw new IllegalArgumentException("Field type does not match TupleDesc type");
+    public void setField(int i, Field f) {
+        if (f.getType() != td.getFieldType(i)) {
+            throw new RuntimeException("Invalid field type in Tuple.setField()");
         }
-        tup[i] = f;
+        fields[i] = f;
     }
 
     /**
      * @return the value of the ith field, or null if it has not been set.
      *
      * @param i
-     *          field index to return. Must be a valid index.
-     * 
-     * @throws NoSuchElementException If the index is out of bounds
+     *            field index to return. Must be a valid index.
      */
-    public Field getField(int i) throws NoSuchElementException {
-        // some code goes here (__done__)
-        if (i < 0 || i >= thisTD.numFields()) {
-            throw new NoSuchElementException("Invalid field index");
-        }
-        return tup[i];
+    public Field getField(int i) {
+        return fields[i];
     }
 
     /**
@@ -116,56 +88,29 @@ public class Tuple implements Serializable {
      * where \t is any whitespace (except a newline)
      */
     public String toString() {
-        // some code goes here (__done__)
-        String tupString = "";
-        Iterator<Field> itr = this.fields();
-        while (itr.hasNext()) {
-            tupString += itr.next().toString();
-            if (itr.hasNext()) {
-                tupString += ' ';
-            }
+        String out = "";
+        for (int i = 0; i < fields.length; i++) {
+            if (out.length() > 0)
+                out += "\t";
+            out += fields[i];
         }
-        return tupString;
+        return out;
     }
 
     /**
      * @return
-     *         An iterator which iterates over all the fields of this tuple
-     */
-    public Iterator<Field> fields() {
-        // some code goes here (__done__)
-        Iterator<Field> fieldIterator = new Iterator<Field>() {
-            private int currentIndex = 0;
-
-            @Override
-            public boolean hasNext() {
-                return thisTD.numFields() > currentIndex;
-            }
-
-            @Override
-            public Field next() {
-                return tup[currentIndex++];
-            }
-        };
-
-        return fieldIterator;
+     *        An iterator which iterates over all the fields of this tuple
+     * */
+    public Iterator<Field> fields()
+    {
+        return Arrays.asList(fields).iterator();
     }
 
     /**
-     * reset the TupleDesc of this tuple
-     */
-    public void resetTupleDesc(TupleDesc td) {
-        // some code goes here (__done__)
-        this.thisTD = td;
-        tup = new Field[td.numFields()];
-        for (int i = 0; i < td.numFields(); i++) {
-            Type type = td.getFieldType(i);
-            if (type == Type.INT_TYPE) {
-                tup[i] = new IntField(0);
-            }
-            if (type == Type.STRING_TYPE) {
-                tup[i] = new StringField("", Type.STRING_LEN);
-            }
-        }
+     * reset the TupleDesc of thi tuple
+     * */
+    public void resetTupleDesc(TupleDesc td)
+    {
+        this.td = td;
     }
 }

@@ -1,8 +1,17 @@
 package simpledb.systemtest;
 
+import simpledb.BufferPool;
+import simpledb.Database;
+import simpledb.DbFileIterator;
+import simpledb.IntField;
+import simpledb.Page;
+import simpledb.PageId;
+import simpledb.Permissions;
+import simpledb.TransactionId;
+import simpledb.Tuple;
 import simpledb.systemtest.SimpleDbTestBase;
-import simpledb.Predicate.Op;
-import simpledb.*;
+import simpledb_OURSOLUTION.*;
+import simpledb_OURSOLUTION.Predicate.Op;
 
 import java.io.File;
 import java.util.*;

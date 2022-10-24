@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import simpledb.systemtest.SimpleDbTestBase;
+import simpledb_OURSOLUTION.BTreePageId;
 
 public class BTreePageIdTest extends SimpleDbTestBase {
 

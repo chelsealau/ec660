@@ -3,6 +3,9 @@ package simpledb;
 import org.junit.Test;
 
 import simpledb.systemtest.SimpleDbTestBase;
+import simpledb_OURSOLUTION.Predicate;
+import simpledb_OURSOLUTION.Utility;
+
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import junit.framework.JUnit4TestAdapter;

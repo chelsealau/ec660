@@ -5,6 +5,9 @@ import java.util.NoSuchElementException;
 import org.junit.Test;
 
 import simpledb.systemtest.SimpleDbTestBase;
+import simpledb_OURSOLUTION.TupleDesc;
+import simpledb_OURSOLUTION.Type;
+import simpledb_OURSOLUTION.Utility;
 
 import static org.junit.Assert.*;
 import junit.framework.Assert;

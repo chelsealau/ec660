@@ -8,6 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import simpledb.systemtest.SimpleDbTestBase;
+import simpledb_OURSOLUTION.HeapPageId;
+import simpledb_OURSOLUTION.RecordId;
 
 public class RecordIdTest extends SimpleDbTestBase {
 

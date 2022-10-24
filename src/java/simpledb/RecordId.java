@@ -10,20 +10,19 @@ public class RecordId implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private PageId pid;
-    private int tupleno;
+    private final PageId pid;
+    private final int tupleno;
 
     /**
      * Creates a new RecordId referring to the specified PageId and tuple
      * number.
      * 
      * @param pid
-     *                the pageid of the page on which the tuple resides
+     *            the pageid of the page on which the tuple resides
      * @param tupleno
-     *                the tuple number within the page.
+     *            the tuple number within the page.
      */
     public RecordId(PageId pid, int tupleno) {
-        // some code goes here (__done__)
         this.pid = pid;
         this.tupleno = tupleno;
     }
@@ -32,7 +31,6 @@ public class RecordId implements Serializable {
      * @return the tuple number this RecordId references.
      */
     public int tupleno() {
-        // some code goes here (__done__)
         return tupleno;
     }
 
@@ -40,7 +38,6 @@ public class RecordId implements Serializable {
      * @return the page id this RecordId references.
      */
     public PageId getPageId() {
-        // some code goes here (__done__)
         return pid;
     }
 
@@ -52,15 +49,11 @@ public class RecordId implements Serializable {
      */
     @Override
     public boolean equals(Object o) {
-        // some code goes here (__done__)
-        if (o == this) {
-            return true;
+        if (o != null && o instanceof RecordId) {
+            RecordId rid = (RecordId) o;
+            return pid.equals(rid.pid) && tupleno == rid.tupleno;
         }
-        if (!(o instanceof RecordId)) {
-            return false;
-        }
-        RecordId rid = (RecordId) o;
-        return this.hashCode() == rid.hashCode();
+        return false;
     }
 
     /**
@@ -71,8 +64,8 @@ public class RecordId implements Serializable {
      */
     @Override
     public int hashCode() {
-        // some code goes here (__done__)
-        // Will be string hashCode of "<PageIdHash>_<tupleno>"
-        return (Integer.toString(pid.hashCode()) + "_" + Integer.toString(tupleno)).hashCode();
+        return tupleno << 16 + pid.hashCode();
+
     }
+
 }
