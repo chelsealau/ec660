@@ -170,6 +170,7 @@ public class BufferPool {
      */
     public  void deleteTuple(TransactionId tid, Tuple t)
         throws DbException, IOException, TransactionAbortedException {
+    	pages.remove()
         // some code goes here
     }
 
@@ -180,7 +181,12 @@ public class BufferPool {
      */
     public synchronized void flushAllPages() throws IOException {
         // some code goes here
-
+    	if (pages.size() == 0) {
+    		return;
+    	}
+    	for (PageId pid : pages.keySet()) {
+    		pages.flushPage(pid);
+    	}
     }
 
     /** Remove the specific page id from the buffer pool.
@@ -193,6 +199,7 @@ public class BufferPool {
     */
     public synchronized void discardPage(PageId pid) {
         // some code goes here
+    	pages.remove(pid);
     }
 
     /**
@@ -216,6 +223,7 @@ public class BufferPool {
      */
     private synchronized  void evictPage() throws DbException {
         // some code goes here
+    	// if hash map is unordered, how would we even access first inserted item? 
     }
 
 }
