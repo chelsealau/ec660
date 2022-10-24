@@ -77,7 +77,7 @@ public class BufferPool {
         final int tableID = pid.getTableId();
         final DbFile dbFile = Database.getCatalog().getDatabaseFile(tableID);
         Page newP = dbFile.readPage(pid);
-        System.out.println("Adding new page to buffer pool: " + pid);
+//        System.out.println("Adding new page to buffer pool: " + pid);
         bp.put(pid, newP);
         return bp.get(pid);
     }
@@ -172,9 +172,13 @@ public class BufferPool {
      * break simpledb if running in NO STEAL mode.
      */
     public synchronized void flushAllPages() throws IOException {
-        // some code goes here
-        // not necessary for lab1
-
+    	// is there an iterator for buffer pool?
+    	if (bp.size() == 0) {
+    		return;
+    	}
+    	for (PageId pid : bp.keySet()) {
+    		bp.flushPage(pid);
+    	}
     }
 
     /**
@@ -198,7 +202,7 @@ public class BufferPool {
      */
     private synchronized void flushPage(PageId pid) throws IOException {
         // some code goes here
-        // not necessary for lab1
+        return;
     }
 
     /**
@@ -216,6 +220,7 @@ public class BufferPool {
     private synchronized void evictPage() throws DbException {
         // some code goes here
         // not necessary for lab1
+    	
     }
 
 }
