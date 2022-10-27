@@ -187,7 +187,7 @@ public class BufferPool {
             return;
         }
         for (PageId pid : pages.keySet()) {
-            // pages.flushPage(pid);
+            flushPage(pid);
         }
     }
 
