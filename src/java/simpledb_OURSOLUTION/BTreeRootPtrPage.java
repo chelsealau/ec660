@@ -2,10 +2,10 @@ package simpledb_OURSOLUTION;
 
 import java.io.*;
 
-import simpledb.BufferPool;
-import simpledb.DbException;
-import simpledb.Page;
-import simpledb.TransactionId;
+import simpledb_OURSOLUTION.BufferPool;
+import simpledb_OURSOLUTION.DbException;
+import simpledb_OURSOLUTION.Page;
+import simpledb_OURSOLUTION.TransactionId;
 
 /**
  * BTreeRootPtrPage stores the pointer to the root node used in the B+ tree and
@@ -23,7 +23,7 @@ public class BTreeRootPtrPage implements Page {
 	private BTreePageId pid;
 	private DataInputStream dis;
 
-	private int root; 
+	private int root;
 	private int rootCategory;
 	private int header;
 
@@ -48,7 +48,7 @@ public class BTreeRootPtrPage implements Page {
 
 		// read in the header pointer
 		header = dis.readInt();
-		
+
 		setBeforeImage();
 	}
 
@@ -64,8 +64,9 @@ public class BTreeRootPtrPage implements Page {
 	}
 
 	/**
-	 * There is only one instance of a BTreeRootPtrPage per table. This static 
+	 * There is only one instance of a BTreeRootPtrPage per table. This static
 	 * method is separate from getId() in order to maintain the Page interface
+	 * 
 	 * @param tableid - the tableid of this table
 	 * @return the root pointer page id for the given table
 	 */
@@ -82,35 +83,35 @@ public class BTreeRootPtrPage implements Page {
 	 *
 	 * @return A byte array corresponding to the bytes of this root pointer page.
 	 */
-	public byte[] getPageData(){
+	public byte[] getPageData() {
 		int len = PAGE_SIZE;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream(len);
 		DataOutputStream dos = new DataOutputStream(baos);
 
 		// write out the root pointer (page number of the root page)
-		try{
+		try {
 			dos.writeInt(root);
-		}catch(IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		// write out the category of the root page (leaf or internal)
-		try{
+		try {
 			dos.writeByte((byte) rootCategory);
-		}catch(IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		// write out the header pointer (page number of the first header page)
-		try{
+		try {
 			dos.writeInt(header);
-		}catch(IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		try {
 			dos.flush();
-		}catch(IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
@@ -121,19 +122,21 @@ public class BTreeRootPtrPage implements Page {
 	 * Static method to generate a byte array corresponding to an empty
 	 * BTreeRootPtrPage.
 	 * Used to add new, empty pages to the file. Passing the results of
-	 * this method to the BTreeRootPtrPage constructor will create a BTreeRootPtrPage with
+	 * this method to the BTreeRootPtrPage constructor will create a
+	 * BTreeRootPtrPage with
 	 * no valid entries in it.
 	 *
 	 * @return The returned ByteArray.
 	 */
 	public static byte[] createEmptyPageData() {
 		int len = PAGE_SIZE;
-		return new byte[len]; //all 0
+		return new byte[len]; // all 0
 	}
 
-	public void markDirty(boolean dirty, TransactionId tid){
+	public void markDirty(boolean dirty, TransactionId tid) {
 		this.dirty = dirty;
-		if (dirty) this.dirtier = tid;
+		if (dirty)
+			this.dirtier = tid;
 	}
 
 	public TransactionId isDirty() {
@@ -143,14 +146,16 @@ public class BTreeRootPtrPage implements Page {
 			return null;
 	}
 
-	/** Return a view of this page before it was modified
-        -- used by recovery */
-	public BTreeRootPtrPage getBeforeImage(){
+	/**
+	 * Return a view of this page before it was modified
+	 * -- used by recovery
+	 */
+	public BTreeRootPtrPage getBeforeImage() {
 		try {
-			return new BTreeRootPtrPage(pid,oldData);
+			return new BTreeRootPtrPage(pid, oldData);
 		} catch (IOException e) {
 			e.printStackTrace();
-			//should never happen -- we parsed it OK before!
+			// should never happen -- we parsed it OK before!
 			System.exit(1);
 		}
 		return null;
@@ -158,10 +163,11 @@ public class BTreeRootPtrPage implements Page {
 
 	/**
 	 * Get the id of the root page in this B+ tree
+	 * 
 	 * @return the id of the root page
 	 */
 	public BTreePageId getRootId() {
-		if(root == 0) {
+		if (root == 0) {
 			return null;
 		}
 		return new BTreePageId(pid.getTableId(), root, rootCategory);
@@ -169,18 +175,18 @@ public class BTreeRootPtrPage implements Page {
 
 	/**
 	 * Set the id of the root page in this B+ tree
+	 * 
 	 * @param id - the id of the root page
 	 * @throws DbException if the id is invalid
 	 */
 	public void setRootId(BTreePageId id) throws DbException {
-		if(id == null) {
+		if (id == null) {
 			root = 0;
-		}
-		else {
-			if(id.getTableId() != pid.getTableId()) {
+		} else {
+			if (id.getTableId() != pid.getTableId()) {
 				throw new DbException("table id mismatch in setRootId");
 			}
-			if(id.pgcateg() != BTreePageId.INTERNAL && id.pgcateg() != BTreePageId.LEAF) {
+			if (id.pgcateg() != BTreePageId.INTERNAL && id.pgcateg() != BTreePageId.LEAF) {
 				throw new DbException("root must be an internal node or leaf node");
 			}
 			root = id.pageNumber();
@@ -190,10 +196,11 @@ public class BTreeRootPtrPage implements Page {
 
 	/**
 	 * Get the id of the first header page, or null if none exists
+	 * 
 	 * @return the id of the first header page
 	 */
 	public BTreePageId getHeaderId() {
-		if(header == 0) {
+		if (header == 0) {
 			return null;
 		}
 		return new BTreePageId(pid.getTableId(), header, BTreePageId.HEADER);
@@ -201,18 +208,18 @@ public class BTreeRootPtrPage implements Page {
 
 	/**
 	 * Set the page id of the first header page
+	 * 
 	 * @param id - the id of the first header page
 	 * @throws DbException if the id is invalid
 	 */
 	public void setHeaderId(BTreePageId id) throws DbException {
-		if(id == null) {
+		if (id == null) {
 			header = 0;
-		}
-		else {
-			if(id.getTableId() != pid.getTableId()) {
+		} else {
+			if (id.getTableId() != pid.getTableId()) {
 				throw new DbException("table id mismatch in setHeaderId");
 			}
-			if(id.pgcateg() != BTreePageId.HEADER) {
+			if (id.pgcateg() != BTreePageId.HEADER) {
 				throw new DbException("header must be of type BTreePageId.HEADER");
 			}
 			header = id.pageNumber();
@@ -221,6 +228,7 @@ public class BTreeRootPtrPage implements Page {
 
 	/**
 	 * Get the page size of root pointer pages
+	 * 
 	 * @return the page size
 	 */
 	public static int getPageSize() {
@@ -228,4 +236,3 @@ public class BTreeRootPtrPage implements Page {
 	}
 
 }
-

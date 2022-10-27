@@ -13,7 +13,6 @@ import simpledb.Tuple;
 import simpledb.TupleDesc;
 import simpledb.Utility;
 import simpledb.systemtest.SystemTestUtil;
-import simpledb_OURSOLUTION.*;
 
 import static org.junit.Assert.*;
 

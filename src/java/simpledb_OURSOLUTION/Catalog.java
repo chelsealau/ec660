@@ -7,11 +7,11 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import simpledb.DbFile;
-import simpledb.HeapFile;
-import simpledb.TableDesc;
-import simpledb.TupleDesc;
-import simpledb.Type;
+import simpledb_OURSOLUTION.DbFile;
+import simpledb_OURSOLUTION.HeapFile;
+import simpledb_OURSOLUTION.TableDesc;
+import simpledb_OURSOLUTION.TupleDesc;
+import simpledb_OURSOLUTION.Type;
 
 /**
  * The Catalog keeps track of all available tables in the database and their

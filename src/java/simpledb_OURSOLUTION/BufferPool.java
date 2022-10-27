@@ -4,16 +4,16 @@ import java.io.*;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import simpledb.BufferPool;
-import simpledb.Database;
-import simpledb.DbException;
-import simpledb.DbFile;
-import simpledb.Page;
-import simpledb.PageId;
-import simpledb.Permissions;
-import simpledb.TransactionAbortedException;
-import simpledb.TransactionId;
-import simpledb.Tuple;
+import simpledb_OURSOLUTION.BufferPool;
+import simpledb_OURSOLUTION.Database;
+import simpledb_OURSOLUTION.DbException;
+import simpledb_OURSOLUTION.DbFile;
+import simpledb_OURSOLUTION.Page;
+import simpledb_OURSOLUTION.PageId;
+import simpledb_OURSOLUTION.Permissions;
+import simpledb_OURSOLUTION.TransactionAbortedException;
+import simpledb_OURSOLUTION.TransactionId;
+import simpledb_OURSOLUTION.Tuple;
 
 /**
  * BufferPool manages the reading and writing of pages into memory from
@@ -88,7 +88,7 @@ public class BufferPool {
         final int tableID = pid.getTableId();
         final DbFile dbFile = Database.getCatalog().getDatabaseFile(tableID);
         Page newP = dbFile.readPage(pid);
-//        System.out.println("Adding new page to buffer pool: " + pid);
+        // System.out.println("Adding new page to buffer pool: " + pid);
         bp.put(pid, newP);
         return bp.get(pid);
     }
@@ -183,13 +183,13 @@ public class BufferPool {
      * break simpledb if running in NO STEAL mode.
      */
     public synchronized void flushAllPages() throws IOException {
-    	// is there an iterator for buffer pool?
-    	if (bp.size() == 0) {
-    		return;
-    	}
-    	for (PageId pid : bp.keySet()) {
-    		bp.flushPage(pid);
-    	}
+        // is there an iterator for buffer pool?
+        if (bp.size() == 0) {
+            return;
+        }
+        for (PageId pid : bp.keySet()) {
+            flushPage(pid);
+        }
     }
 
     /**
@@ -231,7 +231,7 @@ public class BufferPool {
     private synchronized void evictPage() throws DbException {
         // some code goes here
         // not necessary for lab1
-    	
+
     }
 
 }

@@ -14,10 +14,10 @@ import org.junit.Test;
 import simpledb.TestUtil.SkeletonFile;
 import simpledb.systemtest.SimpleDbTestBase;
 import simpledb.systemtest.SystemTestUtil;
-import simpledb_OURSOLUTION.Database;
-import simpledb_OURSOLUTION.DbFile;
-import simpledb_OURSOLUTION.TupleDesc;
-import simpledb_OURSOLUTION.Utility;
+import simpledb.Database;
+import simpledb.DbFile;
+import simpledb.TupleDesc;
+import simpledb.Utility;
 
 public class CatalogTest extends SimpleDbTestBase {
     private static Random r = new Random();

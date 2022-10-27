@@ -4,16 +4,16 @@ import java.util.*;
 
 import javax.xml.crypto.Data;
 
-import simpledb.Database;
-import simpledb.DbException;
-import simpledb.DbFileIterator;
-import simpledb.DbIterator;
-import simpledb.HeapFile;
-import simpledb.TransactionAbortedException;
-import simpledb.TransactionId;
-import simpledb.Tuple;
-import simpledb.TupleDesc;
-import simpledb.Type;
+import simpledb_OURSOLUTION.Database;
+import simpledb_OURSOLUTION.DbException;
+import simpledb_OURSOLUTION.DbFileIterator;
+import simpledb_OURSOLUTION.DbIterator;
+import simpledb_OURSOLUTION.HeapFile;
+import simpledb_OURSOLUTION.TransactionAbortedException;
+import simpledb_OURSOLUTION.TransactionId;
+import simpledb_OURSOLUTION.Tuple;
+import simpledb_OURSOLUTION.TupleDesc;
+import simpledb_OURSOLUTION.Type;
 import simpledb_OURSOLUTION.TupleDesc.TDItem;
 
 /**

@@ -3,27 +3,27 @@ package simpledb_OURSOLUTION;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicLong;
 
-import simpledb.TransactionId;
+import simpledb_OURSOLUTION.TransactionId;
 
 /**
  * TransactionId is a class that contains the identifier of a transaction.
  */
 public class TransactionId implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    static AtomicLong counter = new AtomicLong(0);
-    final long myid;
+	static AtomicLong counter = new AtomicLong(0);
+	final long myid;
 
-    public TransactionId() {
-        myid = counter.getAndIncrement();
-    }
+	public TransactionId() {
+		myid = counter.getAndIncrement();
+	}
 
-    public long getId() {
-        return myid;
-    }
+	public long getId() {
+		return myid;
+	}
 
-    @Override
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -37,7 +37,7 @@ public class TransactionId implements Serializable {
 		return true;
 	}
 
-    @Override
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

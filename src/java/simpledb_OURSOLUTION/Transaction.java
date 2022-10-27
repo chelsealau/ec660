@@ -2,8 +2,8 @@ package simpledb_OURSOLUTION;
 
 import java.io.*;
 
-import simpledb.Database;
-import simpledb.TransactionId;
+import simpledb_OURSOLUTION.Database;
+import simpledb_OURSOLUTION.TransactionId;
 
 /**
  * Transaction encapsulates information about the state of
@@ -46,11 +46,11 @@ public class Transaction {
     public void transactionComplete(boolean abort) throws IOException {
 
         if (started) {
-            //write commit / abort records
+            // write commit / abort records
             if (abort) {
-                Database.getLogFile().logAbort(tid); //does rollback too
+                Database.getLogFile().logAbort(tid); // does rollback too
             } else {
-                //write all the dirty pages for this transaction out
+                // write all the dirty pages for this transaction out
                 Database.getBufferPool().flushPages(tid);
                 Database.getLogFile().logCommit(tid);
             }
@@ -61,7 +61,7 @@ public class Transaction {
                 e.printStackTrace();
             }
 
-            //setting this here means we could possibly write multiple abort records -- OK?
+            // setting this here means we could possibly write multiple abort records -- OK?
             started = false;
         }
     }

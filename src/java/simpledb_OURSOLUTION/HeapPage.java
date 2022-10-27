@@ -2,19 +2,19 @@ package simpledb_OURSOLUTION;
 
 import java.util.*;
 
-import simpledb.BufferPool;
-import simpledb.Catalog;
-import simpledb.Database;
-import simpledb.DbException;
-import simpledb.Field;
-import simpledb.HeapFile;
-import simpledb.HeapPage;
-import simpledb.HeapPageId;
-import simpledb.Page;
-import simpledb.RecordId;
-import simpledb.TransactionId;
-import simpledb.Tuple;
-import simpledb.TupleDesc;
+import simpledb_OURSOLUTION.BufferPool;
+import simpledb_OURSOLUTION.Catalog;
+import simpledb_OURSOLUTION.Database;
+import simpledb_OURSOLUTION.DbException;
+import simpledb_OURSOLUTION.Field;
+import simpledb_OURSOLUTION.HeapFile;
+import simpledb_OURSOLUTION.HeapPage;
+import simpledb_OURSOLUTION.HeapPageId;
+import simpledb_OURSOLUTION.Page;
+import simpledb_OURSOLUTION.RecordId;
+import simpledb_OURSOLUTION.TransactionId;
+import simpledb_OURSOLUTION.Tuple;
+import simpledb_OURSOLUTION.TupleDesc;
 
 import java.io.*;
 

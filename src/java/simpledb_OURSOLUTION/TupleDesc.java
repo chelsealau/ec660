@@ -3,9 +3,8 @@ package simpledb_OURSOLUTION;
 import java.io.Serializable;
 import java.util.*;
 
-import simpledb.TDItem;
-import simpledb.TupleDesc;
-import simpledb.Type;
+import simpledb_OURSOLUTION.TupleDesc;
+import simpledb_OURSOLUTION.Type;
 
 import java.lang.instrument.*;
 

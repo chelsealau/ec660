@@ -1,32 +1,36 @@
 package simpledb_OURSOLUTION;
+
 import java.io.Serializable;
 import java.util.*;
 
-import simpledb.DbException;
-import simpledb.TransactionAbortedException;
-import simpledb.Tuple;
-import simpledb.TupleDesc;
+import simpledb_OURSOLUTION.DbException;
+import simpledb_OURSOLUTION.TransactionAbortedException;
+import simpledb_OURSOLUTION.Tuple;
+import simpledb_OURSOLUTION.TupleDesc;
 
 /**
  * DbIterator is the iterator interface that all SimpleDB operators should
  * implement. If the iterator is not open, none of the methods should work,
- * and should throw an IllegalStateException.  In addition to any
+ * and should throw an IllegalStateException. In addition to any
  * resource allocation/deallocation, an open method should call any
  * child iterator open methods, and in a close method, an iterator
  * should call its children's close methods.
  */
-public interface DbIterator extends Serializable{
+public interface DbIterator extends Serializable {
   /**
    * Opens the iterator. This must be called before any of the other methods.
+   * 
    * @throws DbException when there are problems opening/accessing the database.
    */
   public void open()
       throws DbException, TransactionAbortedException;
 
-  /** Returns true if the iterator has more tuples.
+  /**
+   * Returns true if the iterator has more tuples.
+   * 
    * @return true f the iterator has more tuples.
    * @throws IllegalStateException If the iterator has not been opened
- */
+   */
   public boolean hasNext() throws DbException, TransactionAbortedException;
 
   /**
@@ -35,19 +39,21 @@ public interface DbIterator extends Serializable{
    *
    * @return the next tuple in the iteration.
    * @throws NoSuchElementException if there are no more tuples.
-   * @throws IllegalStateException If the iterator has not been opened
+   * @throws IllegalStateException  If the iterator has not been opened
    */
   public Tuple next() throws DbException, TransactionAbortedException, NoSuchElementException;
 
   /**
    * Resets the iterator to the start.
-   * @throws DbException when rewind is unsupported.
+   * 
+   * @throws DbException           when rewind is unsupported.
    * @throws IllegalStateException If the iterator has not been opened
    */
   public void rewind() throws DbException, TransactionAbortedException;
 
   /**
-   * Returns the TupleDesc associated with this DbIterator. 
+   * Returns the TupleDesc associated with this DbIterator.
+   * 
    * @return the TupleDesc associated with this DbIterator.
    */
   public TupleDesc getTupleDesc();

@@ -2,10 +2,10 @@ package simpledb_OURSOLUTION;
 
 import java.io.*;
 
-import simpledb.Field;
-import simpledb.Predicate;
-import simpledb.StringField;
-import simpledb.Type;
+import simpledb_OURSOLUTION.Field;
+import simpledb_OURSOLUTION.Predicate;
+import simpledb_OURSOLUTION.StringField;
+import simpledb_OURSOLUTION.Type;
 
 /**
  * Instance of Field that stores a single String of a fixed length.
@@ -25,9 +25,9 @@ public class StringField implements Field {
 	 * Constructor.
 	 * 
 	 * @param s
-	 *            The value of this field.
+	 *                The value of this field.
 	 * @param maxSize
-	 *            The maximum size of this string
+	 *                The maximum size of this string
 	 */
 	public StringField(String s, int maxSize) {
 		this.maxSize = maxSize;
@@ -76,7 +76,7 @@ public class StringField implements Field {
 	 * are as specified by Field.compare
 	 * 
 	 * @throws IllegalCastException
-	 *             if val is not a StringField
+	 *                              if val is not a StringField
 	 * @see Field#compare
 	 */
 	public boolean compare(Predicate.Op op, Field val) {
@@ -85,26 +85,26 @@ public class StringField implements Field {
 		int cmpVal = value.compareTo(iVal.value);
 
 		switch (op) {
-		case EQUALS:
-			return cmpVal == 0;
+			case EQUALS:
+				return cmpVal == 0;
 
-		case NOT_EQUALS:
-			return cmpVal != 0;
+			case NOT_EQUALS:
+				return cmpVal != 0;
 
-		case GREATER_THAN:
-			return cmpVal > 0;
+			case GREATER_THAN:
+				return cmpVal > 0;
 
-		case GREATER_THAN_OR_EQ:
-			return cmpVal >= 0;
+			case GREATER_THAN_OR_EQ:
+				return cmpVal >= 0;
 
-		case LESS_THAN:
-			return cmpVal < 0;
+			case LESS_THAN:
+				return cmpVal < 0;
 
-		case LESS_THAN_OR_EQ:
-			return cmpVal <= 0;
+			case LESS_THAN_OR_EQ:
+				return cmpVal <= 0;
 
-		case LIKE:
-			return value.indexOf(iVal.value) >= 0;
+			case LIKE:
+				return value.indexOf(iVal.value) >= 0;
 		}
 
 		return false;

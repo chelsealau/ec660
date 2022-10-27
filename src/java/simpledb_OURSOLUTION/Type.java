@@ -2,9 +2,9 @@ package simpledb_OURSOLUTION;
 
 import java.text.ParseException;
 
-import simpledb.Field;
-import simpledb.IntField;
-import simpledb.StringField;
+import simpledb_OURSOLUTION.Field;
+import simpledb_OURSOLUTION.IntField;
+import simpledb_OURSOLUTION.StringField;
 
 import java.io.*;
 

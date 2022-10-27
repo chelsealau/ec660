@@ -1,8 +1,8 @@
 package simpledb_OURSOLUTION;
 
-import simpledb.BufferPool;
-import simpledb.HeapPageId;
-import simpledb.PageId;
+import simpledb_OURSOLUTION.BufferPool;
+import simpledb_OURSOLUTION.HeapPageId;
+import simpledb_OURSOLUTION.PageId;
 
 /** Unique identifier for HeapPage objects. */
 public class HeapPageId implements PageId {

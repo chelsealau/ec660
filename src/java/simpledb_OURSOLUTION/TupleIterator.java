@@ -2,17 +2,17 @@ package simpledb_OURSOLUTION;
 
 import java.util.*;
 
-import simpledb.DbIterator;
-import simpledb.Tuple;
-import simpledb.TupleDesc;
+import simpledb_OURSOLUTION.DbIterator;
+import simpledb_OURSOLUTION.Tuple;
+import simpledb_OURSOLUTION.TupleDesc;
 
 /**
  * Implements a DbIterator by wrapping an Iterable<Tuple>.
  */
 public class TupleIterator implements DbIterator {
     /**
-	 * 
-	 */
+     * 
+     */
     private static final long serialVersionUID = 1L;
     Iterator<Tuple> i = null;
     TupleDesc td = null;
@@ -23,7 +23,7 @@ public class TupleIterator implements DbIterator {
      * descriptor.
      * 
      * @param tuples
-     *            The set of tuples to iterate over
+     *               The set of tuples to iterate over
      */
     public TupleIterator(TupleDesc td, Iterable<Tuple> tuples) {
         this.td = td;

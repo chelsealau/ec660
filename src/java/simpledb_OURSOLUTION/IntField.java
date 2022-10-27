@@ -2,10 +2,10 @@ package simpledb_OURSOLUTION;
 
 import java.io.*;
 
-import simpledb.Field;
-import simpledb.IntField;
-import simpledb.Predicate;
-import simpledb.Type;
+import simpledb_OURSOLUTION.Field;
+import simpledb_OURSOLUTION.IntField;
+import simpledb_OURSOLUTION.Predicate;
+import simpledb_OURSOLUTION.Type;
 
 /**
  * Instance of Field that stores a single integer.

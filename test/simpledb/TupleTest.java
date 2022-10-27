@@ -6,14 +6,14 @@ import junit.framework.JUnit4TestAdapter;
 import org.junit.Test;
 
 import simpledb.systemtest.SimpleDbTestBase;
-import simpledb_OURSOLUTION.HeapPageId;
-import simpledb_OURSOLUTION.IntField;
-import simpledb_OURSOLUTION.RecordId;
-import simpledb_OURSOLUTION.StringField;
-import simpledb_OURSOLUTION.Tuple;
-import simpledb_OURSOLUTION.TupleDesc;
-import simpledb_OURSOLUTION.Type;
-import simpledb_OURSOLUTION.Utility;
+import simpledb.HeapPageId;
+import simpledb.IntField;
+import simpledb.RecordId;
+import simpledb.StringField;
+import simpledb.Tuple;
+import simpledb.TupleDesc;
+import simpledb.Type;
+import simpledb.Utility;
 
 public class TupleTest extends SimpleDbTestBase {
 

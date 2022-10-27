@@ -1,10 +1,11 @@
 package simpledb_OURSOLUTION;
 
-import simpledb.BufferPool;
-import simpledb.PageId;
+import simpledb_OURSOLUTION.BufferPool;
+import simpledb_OURSOLUTION.PageId;
 
-/** Unique identifier for BTreeInternalPage, BTreeLeafPage, BTreeHeaderPage
- *  and BTreeRootPtrPage objects. 
+/**
+ * Unique identifier for BTreeInternalPage, BTreeLeafPage, BTreeHeaderPage
+ * and BTreeRootPtrPage objects.
  */
 public class BTreePageId implements PageId {
 
@@ -37,7 +38,7 @@ public class BTreePageId implements PageId {
 	 * specific table.
 	 *
 	 * @param tableId The table that is being referenced
-	 * @param pgNo The page number in that table.
+	 * @param pgNo    The page number in that table.
 	 * @param pgcateg which kind of page it is
 	 */
 	public BTreePageId(int tableId, int pgNo, int pgcateg) {
@@ -53,7 +54,7 @@ public class BTreePageId implements PageId {
 
 	/**
 	 * @return the page number in the table getTableId() associated with
-	 *   this PageId
+	 *         this PageId
 	 */
 	public int pageNumber() {
 		return pgNo;
@@ -68,8 +69,9 @@ public class BTreePageId implements PageId {
 
 	/**
 	 * @return a hash code for this page, represented by the concatenation of
-	 *   the table number, page number, and pgcateg (needed if a PageId is used as a
-	 *   key in a hash table in the BufferPool, for example.)
+	 *         the table number, page number, and pgcateg (needed if a PageId is
+	 *         used as a
+	 *         key in a hash table in the BufferPool, for example.)
 	 * @see BufferPool
 	 */
 	public int hashCode() {
@@ -82,12 +84,12 @@ public class BTreePageId implements PageId {
 	 *
 	 * @param o The object to compare against (must be a PageId)
 	 * @return true if the objects are equal (e.g., page numbers, table
-	 *   ids and pgcateg are the same)
+	 *         ids and pgcateg are the same)
 	 */
 	public boolean equals(Object o) {
 		if (!(o instanceof BTreePageId))
 			return false;
-		BTreePageId p = (BTreePageId)o;
+		BTreePageId p = (BTreePageId) o;
 		return tableId == p.tableId && pgNo == p.pgNo && pgcateg == p.pgcateg;
 	}
 
@@ -102,10 +104,10 @@ public class BTreePageId implements PageId {
 	}
 
 	/**
-	 *  Return a representation of this object as an array of
-	 *  integers, for writing to disk.  Size of returned array must contain
-	 *  number of integers that corresponds to number of args to one of the
-	 *  constructors.
+	 * Return a representation of this object as an array of
+	 * integers, for writing to disk. Size of returned array must contain
+	 * number of integers that corresponds to number of args to one of the
+	 * constructors.
 	 */
 	public int[] serialize() {
 		int data[] = new int[3];

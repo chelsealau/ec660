@@ -2,17 +2,17 @@ package simpledb_OURSOLUTION;
 
 import java.util.Iterator;
 
-import simpledb.AbstractDbFileIterator;
-import simpledb.Database;
-import simpledb.DbException;
-import simpledb.HeapFile;
-import simpledb.HeapPage;
-import simpledb.HeapPageId;
-import simpledb.PageId;
-import simpledb.Permissions;
-import simpledb.TransactionAbortedException;
-import simpledb.TransactionId;
-import simpledb.Tuple;
+import simpledb_OURSOLUTION.AbstractDbFileIterator;
+import simpledb_OURSOLUTION.Database;
+import simpledb_OURSOLUTION.DbException;
+import simpledb_OURSOLUTION.HeapFile;
+import simpledb_OURSOLUTION.HeapPage;
+import simpledb_OURSOLUTION.HeapPageId;
+import simpledb_OURSOLUTION.PageId;
+import simpledb_OURSOLUTION.Permissions;
+import simpledb_OURSOLUTION.TransactionAbortedException;
+import simpledb_OURSOLUTION.TransactionId;
+import simpledb_OURSOLUTION.Tuple;
 
 /**
  * HeapFileIterator

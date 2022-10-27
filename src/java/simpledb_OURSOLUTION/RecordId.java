@@ -2,8 +2,8 @@ package simpledb_OURSOLUTION;
 
 import java.io.Serializable;
 
-import simpledb.PageId;
-import simpledb.RecordId;
+import simpledb_OURSOLUTION.PageId;
+import simpledb_OURSOLUTION.RecordId;
 
 /**
  * A RecordId is a reference to a specific tuple on a specific page of a

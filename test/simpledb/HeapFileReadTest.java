@@ -2,14 +2,14 @@ package simpledb;
 
 import simpledb.systemtest.SimpleDbTestBase;
 import simpledb.systemtest.SystemTestUtil;
-import simpledb_OURSOLUTION.Database;
-import simpledb_OURSOLUTION.DbFileIterator;
-import simpledb_OURSOLUTION.HeapFile;
-import simpledb_OURSOLUTION.HeapPage;
-import simpledb_OURSOLUTION.HeapPageId;
-import simpledb_OURSOLUTION.TransactionId;
-import simpledb_OURSOLUTION.TupleDesc;
-import simpledb_OURSOLUTION.Utility;
+import simpledb.Database;
+import simpledb.DbFileIterator;
+import simpledb.HeapFile;
+import simpledb.HeapPage;
+import simpledb.HeapPageId;
+import simpledb.TransactionId;
+import simpledb.TupleDesc;
+import simpledb.Utility;
 
 import java.util.*;
 import org.junit.After;

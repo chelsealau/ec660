@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import simpledb.DbException;
-import simpledb.Field;
-import simpledb.Page;
-import simpledb.PageId;
-import simpledb.Permissions;
-import simpledb.TransactionAbortedException;
-import simpledb.TransactionId;
+import simpledb_OURSOLUTION.DbException;
+import simpledb_OURSOLUTION.Field;
+import simpledb_OURSOLUTION.Page;
+import simpledb_OURSOLUTION.PageId;
+import simpledb_OURSOLUTION.Permissions;
+import simpledb_OURSOLUTION.TransactionAbortedException;
+import simpledb_OURSOLUTION.TransactionId;
 
 /**
  * Created by orm on 10/7/15.
@@ -27,7 +27,8 @@ public class BTreeChecker {
         public BTreePageId ptrRight;
         public BTreePageId rightmostId;
 
-        SubtreeSummary() {}
+        SubtreeSummary() {
+        }
 
         SubtreeSummary(BTreeLeafPage base, int depth) {
             this.depth = depth;
@@ -40,9 +41,9 @@ public class BTreeChecker {
         }
 
         static SubtreeSummary checkAndMerge(SubtreeSummary accleft, SubtreeSummary right) {
-            assert(accleft.depth == right.depth);
-            assert(accleft.ptrRight.equals(right.leftmostId));
-            assert(accleft.rightmostId.equals(right.ptrLeft));
+            assert (accleft.depth == right.depth);
+            assert (accleft.ptrRight.equals(right.leftmostId));
+            assert (accleft.rightmostId.equals(right.ptrLeft));
 
             SubtreeSummary ans = new SubtreeSummary();
             ans.depth = accleft.depth;
@@ -65,8 +66,7 @@ public class BTreeChecker {
      * 5) occupancy invariants. (if enabled)
      */
     public static void checkRep(BTreeFile bt, TransactionId tid, HashMap<PageId, Page> dirtypages,
-                                boolean checkOccupancy) throws
-            DbException, IOException, TransactionAbortedException {
+            boolean checkOccupancy) throws DbException, IOException, TransactionAbortedException {
         BTreeRootPtrPage rtptr = bt.getRootPtrPage(tid, dirtypages);
 
         if (rtptr.getRootId() == null) { // non existent root is a legal state.
@@ -80,11 +80,10 @@ public class BTreeChecker {
     }
 
     static SubtreeSummary checkSubTree(BTreeFile bt, TransactionId tid, HashMap<PageId, Page> dirtypages,
-                                       BTreePageId pageId, Field lowerBound, Field upperBound,
-                                       BTreePageId parentId, boolean checkOccupancy, int depth) throws
-            TransactionAbortedException, DbException {
-        BTreePage page = (BTreePage )bt.getPage(tid, dirtypages, pageId, Permissions.READ_ONLY);
-        assert(page.getParentId().equals(parentId));
+            BTreePageId pageId, Field lowerBound, Field upperBound,
+            BTreePageId parentId, boolean checkOccupancy, int depth) throws TransactionAbortedException, DbException {
+        BTreePage page = (BTreePage) bt.getPage(tid, dirtypages, pageId, Permissions.READ_ONLY);
+        assert (page.getParentId().equals(parentId));
 
         if (page.getId().pgcateg() == BTreePageId.LEAF) {
             BTreeLeafPage bpage = (BTreeLeafPage) page;
@@ -106,13 +105,13 @@ public class BTreeChecker {
                 lowerBound = prev.getKey();
             }
 
-            assert(acc != null);
+            assert (acc != null);
             BTreeEntry curr = prev; // for one entry case.
             while (it.hasNext()) {
                 curr = it.next();
-                SubtreeSummary currentSubTreeResult =
-                        checkSubTree(bt, tid, dirtypages, curr.getLeftChild(), lowerBound, curr.getKey(), ipage.getId(),
-                                checkOccupancy, depth + 1);
+                SubtreeSummary currentSubTreeResult = checkSubTree(bt, tid, dirtypages, curr.getLeftChild(), lowerBound,
+                        curr.getKey(), ipage.getId(),
+                        checkOccupancy, depth + 1);
                 acc = SubtreeSummary.checkAndMerge(acc, currentSubTreeResult);
 
                 // need to move stuff for next iter:
@@ -125,7 +124,7 @@ public class BTreeChecker {
 
             return acc;
         } else {
-            assert(false); // no other page types allowed inside the tree.
+            assert (false); // no other page types allowed inside the tree.
             return null;
         }
     }

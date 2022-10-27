@@ -5,12 +5,12 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import simpledb.Field;
-import simpledb.IntField;
-import simpledb.RecordId;
-import simpledb.StringField;
-import simpledb.TupleDesc;
-import simpledb.Type;
+import simpledb_OURSOLUTION.Field;
+import simpledb_OURSOLUTION.IntField;
+import simpledb_OURSOLUTION.RecordId;
+import simpledb_OURSOLUTION.StringField;
+import simpledb_OURSOLUTION.TupleDesc;
+import simpledb_OURSOLUTION.Type;
 
 /**
  * Tuple maintains information about the contents of a tuple. Tuples have a

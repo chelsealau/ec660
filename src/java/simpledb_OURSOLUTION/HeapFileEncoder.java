@@ -3,10 +3,10 @@ package simpledb_OURSOLUTION;
 import java.io.*;
 import java.util.ArrayList;
 
-import simpledb.HeapFile;
-import simpledb.HeapPage;
-import simpledb.Type;
-import simpledb.Utility;
+import simpledb_OURSOLUTION.HeapFile;
+import simpledb_OURSOLUTION.HeapPage;
+import simpledb_OURSOLUTION.Type;
+import simpledb_OURSOLUTION.Utility;
 
 /**
  * HeapFileEncoder reads a comma delimited text file or accepts

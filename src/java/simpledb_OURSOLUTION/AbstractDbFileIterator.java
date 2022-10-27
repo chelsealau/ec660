@@ -2,16 +2,17 @@ package simpledb_OURSOLUTION;
 
 import java.util.NoSuchElementException;
 
-import simpledb.DbException;
-import simpledb.DbFileIterator;
-import simpledb.TransactionAbortedException;
-import simpledb.Tuple;
+import simpledb_OURSOLUTION.DbException;
+import simpledb_OURSOLUTION.DbFileIterator;
+import simpledb_OURSOLUTION.TransactionAbortedException;
+import simpledb_OURSOLUTION.Tuple;
 
 /** Helper for implementing DbFileIterators. Handles hasNext()/next() logic. */
 public abstract class AbstractDbFileIterator implements DbFileIterator {
 
-	public boolean hasNext() throws DbException, TransactionAbortedException {
-        if (next == null) next = readNext();
+    public boolean hasNext() throws DbException, TransactionAbortedException {
+        if (next == null)
+            next = readNext();
         return next != null;
     }
 
@@ -19,7 +20,8 @@ public abstract class AbstractDbFileIterator implements DbFileIterator {
             NoSuchElementException {
         if (next == null) {
             next = readNext();
-            if (next == null) throw new NoSuchElementException();
+            if (next == null)
+                throw new NoSuchElementException();
         }
 
         Tuple result = next;
@@ -33,8 +35,11 @@ public abstract class AbstractDbFileIterator implements DbFileIterator {
         next = null;
     }
 
-    /** Reads the next tuple from the underlying source.
-    @return the next Tuple in the iterator, null if the iteration is finished. */
+    /**
+     * Reads the next tuple from the underlying source.
+     * 
+     * @return the next Tuple in the iterator, null if the iteration is finished.
+     */
     protected abstract Tuple readNext() throws DbException, TransactionAbortedException;
 
     private Tuple next = null;

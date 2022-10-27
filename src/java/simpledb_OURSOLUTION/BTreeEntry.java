@@ -2,8 +2,8 @@ package simpledb_OURSOLUTION;
 
 import java.io.Serializable;
 
-import simpledb.Field;
-import simpledb.RecordId;
+import simpledb_OURSOLUTION.Field;
+import simpledb_OURSOLUTION.RecordId;
 
 /**
  * Each instance of BTreeEntry stores one key and two child page ids. It is used

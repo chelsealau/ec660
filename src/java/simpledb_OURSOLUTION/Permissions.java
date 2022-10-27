@@ -1,6 +1,6 @@
 package simpledb_OURSOLUTION;
 
-import simpledb.Permissions;
+import simpledb_OURSOLUTION.Permissions;
 
 /**
  * Class representing requested permissions to a relation/file.
