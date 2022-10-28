@@ -197,7 +197,7 @@ public class BTreeFile implements DbFile {
 			return (BTreeLeafPage) getPage(tid, dirtypages, pid, perm);
 		}
 
-		BTreeInternalPage interPage = (BTreeInternalPage) this.getPage(tid, dirtypages, pid, perm);
+		BTreeInternalPage interPage = (BTreeInternalPage) this.getPage(tid, dirtypages, pid, Permissions.READ_ONLY);
 		Iterator<BTreeEntry> it = interPage.iterator();
 		BTreeEntry entry = null;
 		
