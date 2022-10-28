@@ -248,7 +248,7 @@ public class BufferPool {
     	 */
     	List<PageId> keyList = new ArrayList<PageId>();
     	Random rand = new Random();
-    	int randNum = rand.nextInt(numPages+1);
+    	int randNum = rand.nextInt(numPages);
     	
 //    	PageId randPId = pages.keySet().toArray()[randNum];
     	for (PageId pid : pages.keySet()) {
