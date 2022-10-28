@@ -248,6 +248,7 @@ java.io.BufferedOutputStream
 simpledb.BTreeHeaderPage
 simpledb.Tuple
 simpledb.BTreeFile
+simpledb.Predicate
 simpledb.BufferPool
 simpledb.BTreeFileIterator
 simpledb.BTreeSearchIterator
@@ -267,6 +268,8 @@ java.io.File
 simpledb.BTreeLeafPage
 simpledb.Database
 simpledb.BTreeRootPtrPage
+simpledb.Predicate$Op
+simpledb.Field
 simpledb.Permissions
 simpledb.BTreePageId
 java.lang.Object
@@ -274,9 +277,13 @@ java.lang.StringBuilder
 simpledb.PageId
 simpledb.TransactionAbortedException
 ||:simpledb.Predicate
+simpledb.Tuple
+simpledb.Field
 simpledb.Predicate$Op
 simpledb.Predicate
 java.lang.Object
+java.lang.String
+java.lang.Integer
 java.io.Serializable
 ||:simpledb.systemtest.ScanTest$1InstrumentedHeapFile
 simpledb.systemtest.ScanTest$1InstrumentedHeapFile
@@ -1866,7 +1873,10 @@ simpledb.DbException
 simpledb.TransactionId
 java.util.concurrent.ConcurrentHashMap
 java.io.IOException
+java.util.Random
 simpledb.Database
+java.util.ArrayList
+java.util.List
 java.util.concurrent.ConcurrentHashMap$KeySetView
 simpledb.BufferPool
 simpledb.Permissions
@@ -2198,6 +2208,7 @@ java.lang.String
 java.io.BufferedReader
 java.io.FileReader
 ||:simpledb.IndexPredicate
+simpledb.Field
 simpledb.Predicate$Op
 simpledb.Predicate
 java.lang.Object
