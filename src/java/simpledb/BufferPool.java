@@ -74,7 +74,7 @@ public class BufferPool {
      * @param tid  the ID of the transaction requesting the page
      * @param pid  the ID of the requested page
      * @param perm the requested permissions on the page
-     * @throws IOException 
+     * @throws IOException
      */
     public Page getPage(TransactionId tid, PageId pid, Permissions perm)
             throws TransactionAbortedException, DbException {
@@ -214,14 +214,13 @@ public class BufferPool {
      * 
      * @param pid an ID indicating the page to flush
      */
-    private synchronized  void flushPage(PageId pid) throws IOException {
-     
-    	// Write to disk 
-    	Page p = pages.get(pid);
-        Database.getCatalog().getDatabaseFile(pid.getTableId()).writePage(p);
-        
-        // mark page as not dirty 
-    	p.markDirty(false, null);
+    private synchronized void flushPage(PageId pid) throws IOException {
+        // Write to disk if dirty
+        Page p = pages.get(pid);
+        if (p.isDirty() != null) {
+            Database.getCatalog().getDatabaseFile(pid.getTableId()).writePage(p);
+            p.markDirty(false, null);
+        }
     }
 
     /**
@@ -235,39 +234,28 @@ public class BufferPool {
     /**
      * Discards a page from the buffer pool.
      * Flushes the page to disk to ensure dirty pages are updated on disk.
-     * @throws IOException 
+     * 
+     * @throws IOException
      */
 
-    private synchronized  void evictPage() throws DbException {
-      
-    	/** 
-    	 * Generate random number between 0, numPages
-    	 * Create list of keys from pages hash map
-    	 * Use random number to select key(pid) 
-    	 * Discard and flush page with selected pid 
-    	 */
-    	List<PageId> keyList = new ArrayList<PageId>();
-    	Random rand = new Random();
-    	int randNum = rand.nextInt(numPages);
-    	
-//    	PageId randPId = pages.keySet().toArray()[randNum];
-    	for (PageId pid : pages.keySet()) {
-    		keyList.add(pid);
-    	}
-    	
-    	PageId randPId = keyList.get(randNum);
-    	
-    	// isDirty will return tid if dirty, null if not
-    	// If page is dirty, flush page to disk
-    	if (pages.get(randPId).isDirty() != null) {
-    		try {
-    			flushPage(randPId);
-    		} catch(IOException ie) {
-    			ie.printStackTrace();
-    		}
-    	}
-    	discardPage(randPId);
-    	
+    private synchronized void evictPage() throws DbException {
+
+        /**
+         * Generate random number between 0, numPages
+         * Create list of keys from pages hash map
+         * Use random number to select key(pid)
+         * Discard and flush page with selected pid
+         */
+        Random rand = new Random();
+        int randNum = rand.nextInt(numPages);
+
+        PageId pageToEvict = (PageId) pages.keySet().toArray()[randNum];
+        try {
+            flushPage(pageToEvict);
+            discardPage(pageToEvict);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
