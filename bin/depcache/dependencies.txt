@@ -1875,6 +1875,8 @@ java.util.concurrent.ConcurrentHashMap
 java.io.IOException
 java.util.Random
 simpledb.Database
+simpledb.Tuple
+java.util.List
 java.util.concurrent.ConcurrentHashMap$KeySetView
 simpledb.BufferPool
 simpledb.Permissions
