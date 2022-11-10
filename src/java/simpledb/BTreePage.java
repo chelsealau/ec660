@@ -27,6 +27,7 @@ public abstract class BTreePage implements Page {
 	protected byte[] oldData;
 	protected final Byte oldDataLock=new Byte((byte)0);
 
+	
 	/**
 	 * Create a BTreeInternalPage from a set of bytes of data read from disk.
 	 * The format of a BTreeInternalPage is a set of header bytes indicating
@@ -64,6 +65,7 @@ public abstract class BTreePage implements Page {
 		return pid;
 	}
 
+
 	/**
 	 * Static method to generate a byte array corresponding to an empty
 	 * BTreePage.
@@ -77,6 +79,7 @@ public abstract class BTreePage implements Page {
 		int len = BufferPool.getPageSize();
 		return new byte[len]; //all 0
 	}
+
 
 	/**
 	 * Get the parent id of this page
@@ -131,6 +134,7 @@ public abstract class BTreePage implements Page {
 			return null;
 	}
 
+
 	/**
 	 * Returns the number of empty slots on this page.
 	 */
@@ -142,4 +146,5 @@ public abstract class BTreePage implements Page {
 	public abstract boolean isSlotUsed(int i);
 
 }
+
 

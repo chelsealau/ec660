@@ -26,7 +26,6 @@ import simpledb.Tuple;
 import simpledb.TupleDesc;
 import simpledb.Type;
 import simpledb.Utility;
-import simpledb_OURSOLUTION.*;
 
 public class SystemTestUtil {
     public static final TupleDesc SINGLE_INT_DESCRIPTOR = new TupleDesc(new Type[] { Type.INT_TYPE });

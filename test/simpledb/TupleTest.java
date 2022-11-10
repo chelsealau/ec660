@@ -6,22 +6,13 @@ import junit.framework.JUnit4TestAdapter;
 import org.junit.Test;
 
 import simpledb.systemtest.SimpleDbTestBase;
-import simpledb.HeapPageId;
-import simpledb.IntField;
-import simpledb.RecordId;
-import simpledb.StringField;
-import simpledb.Tuple;
-import simpledb.TupleDesc;
-import simpledb.Type;
-import simpledb.Utility;
 
 public class TupleTest extends SimpleDbTestBase {
 
     /**
      * Unit test for Tuple.getField() and Tuple.setField()
      */
-    @Test
-    public void modifyFields() {
+    @Test public void modifyFields() {
         TupleDesc td = Utility.getTupleDesc(2);
 
         Tuple tup = new Tuple(td);
@@ -41,8 +32,7 @@ public class TupleTest extends SimpleDbTestBase {
     /**
      * Unit test for Tuple.getTupleDesc()
      */
-    @Test
-    public void getTupleDesc() {
+    @Test public void getTupleDesc() {
         TupleDesc td = Utility.getTupleDesc(5);
         Tuple tup = new Tuple(td);
         assertEquals(td, tup.getTupleDesc());
@@ -51,33 +41,20 @@ public class TupleTest extends SimpleDbTestBase {
     /**
      * Unit test for Tuple.getRecordId() and Tuple.setRecordId()
      */
-    @Test
-    public void modifyRecordId() {
+    @Test public void modifyRecordId() {
         Tuple tup1 = new Tuple(Utility.getTupleDesc(1));
-        HeapPageId pid1 = new HeapPageId(0, 0);
+        HeapPageId pid1 = new HeapPageId(0,0);
         RecordId rid1 = new RecordId(pid1, 0);
         tup1.setRecordId(rid1);
 
-        try {
-            assertEquals(rid1, tup1.getRecordId());
-        } catch (java.lang.UnsupportedOperationException e) {
-            // rethrow the exception with an explanation
-            throw new UnsupportedOperationException("modifyRecordId() test failed due to " +
-                    "RecordId.equals() not being implemented.  This is not required for Lab 1, " +
-                    "but should pass when you do implement the RecordId class.");
-        }
-    }
-
-    @Test
-    public void tupleStringFormat() {
-        Tuple tup1 = new Tuple(Utility.getTupleDesc(3, "myInteger"));
-        assertEquals("0 0 0", tup1.toString());
-
-        Tuple tup2 = new Tuple(new TupleDesc(new Type[] { Type.STRING_TYPE, Type.INT_TYPE },
-                new String[] { "myString", "myInteger" }));
-        tup2.setField(0, new StringField("Hello", 10));
-        tup2.setField(1, new IntField(42));
-        assertEquals("Hello 42", tup2.toString());
+	try {
+	    assertEquals(rid1, tup1.getRecordId());
+	} catch (java.lang.UnsupportedOperationException e) {
+		//rethrow the exception with an explanation
+    	throw new UnsupportedOperationException("modifyRecordId() test failed due to " +
+    			"RecordId.equals() not being implemented.  This is not required for Lab 1, " +
+    			"but should pass when you do implement the RecordId class.");
+	}
     }
 
     /**
@@ -87,3 +64,4 @@ public class TupleTest extends SimpleDbTestBase {
         return new JUnit4TestAdapter(TupleTest.class);
     }
 }
+

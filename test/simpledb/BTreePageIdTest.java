@@ -9,7 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import simpledb.systemtest.SimpleDbTestBase;
-import simpledb.BTreePageId;
 
 public class BTreePageIdTest extends SimpleDbTestBase {
 
@@ -18,8 +17,7 @@ public class BTreePageIdTest extends SimpleDbTestBase {
 	private BTreePageId leafId;
 	private BTreePageId headerId;
 
-	@Before
-	public void createPid() {
+	@Before public void createPid() {
 		rootPtrId = new BTreePageId(1, 0, BTreePageId.ROOT_PTR);
 		internalId = new BTreePageId(1, 1, BTreePageId.INTERNAL);
 		leafId = new BTreePageId(1, 2, BTreePageId.LEAF);
@@ -29,8 +27,7 @@ public class BTreePageIdTest extends SimpleDbTestBase {
 	/**
 	 * Unit test for BTreePageId.getTableId()
 	 */
-	@Test
-	public void getTableId() {
+	@Test public void getTableId() {
 		assertEquals(1, rootPtrId.getTableId());
 		assertEquals(1, internalId.getTableId());
 		assertEquals(1, leafId.getTableId());
@@ -40,8 +37,7 @@ public class BTreePageIdTest extends SimpleDbTestBase {
 	/**
 	 * Unit test for BTreePageId.pageno()
 	 */
-	@Test
-	public void pageno() {
+	@Test public void pageno() {
 		assertEquals(0, rootPtrId.pageNumber());
 		assertEquals(1, internalId.pageNumber());
 		assertEquals(2, leafId.pageNumber());
@@ -51,8 +47,7 @@ public class BTreePageIdTest extends SimpleDbTestBase {
 	/**
 	 * Unit test for BTreePageId.hashCode()
 	 */
-	@Test
-	public void testHashCode() {
+	@Test public void testHashCode() {
 		int code1, code2, code3, code4;
 
 		// NOTE(ghuo): the hashCode could be anything. test determinism,
@@ -77,8 +72,7 @@ public class BTreePageIdTest extends SimpleDbTestBase {
 	/**
 	 * Unit test for BTreePageId.equals()
 	 */
-	@Test
-	public void equals() {
+	@Test public void equals() {
 		BTreePageId pid1 = new BTreePageId(1, 1, BTreePageId.LEAF);
 		BTreePageId pid1Copy = new BTreePageId(1, 1, BTreePageId.LEAF);
 		BTreePageId pid2 = new BTreePageId(2, 2, BTreePageId.LEAF);
@@ -111,3 +105,4 @@ public class BTreePageIdTest extends SimpleDbTestBase {
 		return new JUnit4TestAdapter(BTreePageIdTest.class);
 	}
 }
+

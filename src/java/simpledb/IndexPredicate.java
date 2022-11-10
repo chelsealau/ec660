@@ -9,9 +9,12 @@ import java.io.Serializable;
 public class IndexPredicate implements Serializable {
 	
     private static final long serialVersionUID = 1L;
-	Predicate.Op ipOp;
-	Field ipFvalue;
 	
+	// <silentstrip lab1|lab2>
+    private Predicate.Op op;
+    private Field fieldvalue;
+    // </silentstrip>
+
     /**
      * Constructor.
      *
@@ -22,18 +25,37 @@ public class IndexPredicate implements Serializable {
      * @see Predicate
      */
     public IndexPredicate(Predicate.Op op, Field fvalue) {
-        this.ipOp = op;
-        this.ipFvalue = fvalue;
+        // <strip lab1|lab2>
+        this.op = op;
+        this.fieldvalue = fvalue;
+        // </strip>
+        // <insert lab1>
+        // // not necessary for lab1
+        // </insert>
     }
 
     public Field getField() {
-        
-        return ipFvalue;
+        // <strip lab1|lab2>
+        return fieldvalue;
+        // </strip>
+        // <insert lab1>
+        // // not necessary for lab1
+        // </insert>
+        // <insert lab1|lab2>
+        // return null;
+        // </insert>
     }
 
     public Predicate.Op getOp() {
-        
-        return ipOp;
+        // <strip lab1|lab2>
+        return op;
+        // </strip>
+        // <insert lab1>
+        // // not necessary for lab1
+        // </insert>
+        // <insert lab1|lab2>
+        // return null;
+        // </insert>
     }
 
     /** Return true if the fieldvalue in the supplied predicate
@@ -42,11 +64,17 @@ public class IndexPredicate implements Serializable {
         @param ipd The field to compare against.
     */
     public boolean equals(IndexPredicate ipd) {
-        
-    	if (this.ipFvalue.compare(this.ipOp, ipd.ipFvalue)) {
-    		return true;
-    	}
-        return false;
+        // <strip lab1|lab2>
+        if (ipd == null)
+            return false;
+        return (op.equals(ipd.op) && fieldvalue.equals(ipd.fieldvalue));
+        // </strip>
+        // <insert lab1>
+        // // not necessary for lab1
+        // </insert>
+        // <insert lab1|lab2>
+        // return false;
+        // </insert>
     }
 
 }

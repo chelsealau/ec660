@@ -364,6 +364,7 @@ public class BTreeUtility {
 		return page;
 	}
 
+	
 	/**
 	 * creates a *non* random B+ tree file for testing
 	 * @param columns - number of columns
@@ -480,6 +481,7 @@ public class BTreeUtility {
 		return bf;
 	}
 
+	
 	/**
 	 * Helper class that attempts to insert a tuple in a new thread
 	 *
@@ -843,6 +845,7 @@ public class BTreeUtility {
 			 }
 		 }
 	}
+
 
 }
 

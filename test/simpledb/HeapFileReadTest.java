@@ -2,14 +2,6 @@ package simpledb;
 
 import simpledb.systemtest.SimpleDbTestBase;
 import simpledb.systemtest.SystemTestUtil;
-import simpledb.Database;
-import simpledb.DbFileIterator;
-import simpledb.HeapFile;
-import simpledb.HeapPage;
-import simpledb.HeapPageId;
-import simpledb.TransactionId;
-import simpledb.TupleDesc;
-import simpledb.Utility;
 
 import java.util.*;
 import org.junit.After;
@@ -58,10 +50,9 @@ public class HeapFileReadTest extends SimpleDbTestBase {
      * Unit test for HeapFile.getTupleDesc()
      */
     @Test
-    public void getTupleDesc() throws Exception {
-        assertEquals(td, hf.getTupleDesc());
+    public void getTupleDesc() throws Exception {    	
+        assertEquals(td, hf.getTupleDesc());        
     }
-
     /**
      * Unit test for HeapFile.numPages()
      */
@@ -84,22 +75,6 @@ public class HeapFileReadTest extends SimpleDbTestBase {
         assertEquals(484, page.getNumEmptySlots());
         assertTrue(page.isSlotUsed(1));
         assertFalse(page.isSlotUsed(20));
-    }
-
-    @Test
-    public void failBeforeOpen() throws Exception {
-        HeapFile smallFile = SystemTestUtil.createRandomHeapFile(2, 3, null,
-                null);
-
-        DbFileIterator it = smallFile.iterator(tid);
-        // Not open yet
-        assertFalse(it.hasNext());
-        try {
-            it.next();
-            fail("expected exception");
-        } catch (NoSuchElementException e) {
-            it.close();
-        }
     }
 
     @Test
