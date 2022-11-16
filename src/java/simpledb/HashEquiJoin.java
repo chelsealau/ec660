@@ -6,7 +6,9 @@ import java.util.*;
  * The Join operator implements the relational join operation.
  */
 public class HashEquiJoin extends Operator {
-
+	
+	private JoinPredicate p;
+	private DbIterator child1, child2;
     private static final long serialVersionUID = 1L;
 
     /**
@@ -22,11 +24,14 @@ public class HashEquiJoin extends Operator {
      */
     public HashEquiJoin(JoinPredicate p, DbIterator child1, DbIterator child2) {
         // some code goes here
+    	this.p = p;
+    	this.child1 = child1;
+    	this.child2 = child2;
     }
 
     public JoinPredicate getJoinPredicate() {
         // some code goes here
-        return null;
+        return p;
     }
 
     public TupleDesc getTupleDesc() {
@@ -37,26 +42,34 @@ public class HashEquiJoin extends Operator {
     public String getJoinField1Name()
     {
         // some code goes here
-	return null;
+    	return child1.getTupleDesc().getFieldName(p.getField1());
     }
 
     public String getJoinField2Name()
     {
         // some code goes here
-        return null;
+        return child2.getTupleDesc().getFieldName(p.getField2());
     }
     
     public void open() throws DbException, NoSuchElementException,
             TransactionAbortedException {
         // some code goes here
+    	super.open();
+    	child1.open();
+    	child2.open();
     }
 
     public void close() {
         // some code goes here
+    	super.close();
+    	child1.close();
+    	child2.close();
     }
 
     public void rewind() throws DbException, TransactionAbortedException {
-        // some code goes here
+        // some code goes here\
+    	child1.rewind();
+    	child2.rewind();
     }
 
     transient Iterator<Tuple> listIt = null;
@@ -81,18 +94,20 @@ public class HashEquiJoin extends Operator {
      */
     protected Tuple fetchNext() throws TransactionAbortedException, DbException {
         // some code goes here
-        return null;
+    	return null;
     }
 
     @Override
     public DbIterator[] getChildren() {
         // some code goes here
-        return null;
+        return new DbIterator[] {child1, child2};
     }
 
     @Override
     public void setChildren(DbIterator[] children) {
         // some code goes here
+    	child1 = children[0];
+    	child2 = children[1];
     }
     
 }
