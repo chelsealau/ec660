@@ -50,7 +50,7 @@ public class IntegerAggregator implements Aggregator {
      *            the Tuple containing an aggregate field and a group-by field
      */
     public void mergeTupleIntoGroup(Tuple tup) {
-        final Field groupByField = gbfield == NO_GROUPING ? new IntField(NO_GROUPING) : tup.getField(gbfield);
+        final Field groupByField = gbfield == NO_GROUPING ? new IntField(Integer.MAX_VALUE) : tup.getField(gbfield);
 
         switch (this.what) {
             case MIN:
@@ -104,15 +104,20 @@ public class IntegerAggregator implements Aggregator {
      */
     public DbIterator iterator() {
         // some code goes here (__done__)
-        return new TupleIterator(new TupleDesc(new Type[] { this.gbfieldtype, Type.INT_TYPE }),
+        final TupleDesc tupleDesc = this.gbfield == NO_GROUPING ? new TupleDesc(new Type[] { Type.INT_TYPE })
+                : new TupleDesc(new Type[] { this.gbfieldtype, Type.INT_TYPE });
+
+        return new TupleIterator(tupleDesc,
                 this.aggregateMap.entrySet().stream().map(entry -> {
-                    final Tuple tuple = new Tuple(new TupleDesc(
-                            new Type[] { this.gbfieldtype, Type.INT_TYPE }));
-                    tuple.setField(0, entry.getKey());
+                    final Tuple tuple = new Tuple(tupleDesc);
+                    int fieldPos = -1;
+                    if (tupleDesc.numFields() == 2) {
+                        tuple.setField(++fieldPos, entry.getKey());
+                    }
                     if (this.what == Op.AVG) {
-                        tuple.setField(1, new IntField(entry.getValue()[0] / entry.getValue()[1]));
+                        tuple.setField(++fieldPos, new IntField(entry.getValue()[0] / entry.getValue()[1]));
                     } else {
-                        tuple.setField(1, new IntField(entry.getValue()[0]));
+                        tuple.setField(++fieldPos, new IntField(entry.getValue()[0]));
                     }
                     return tuple;
                 }).collect(java.util.stream.Collectors.toList()));

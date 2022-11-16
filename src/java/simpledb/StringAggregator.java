@@ -1,5 +1,6 @@
 package simpledb;
 
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -50,7 +51,9 @@ public class StringAggregator implements Aggregator {
      */
     public void mergeTupleIntoGroup(Tuple tup) {
         // some code goes here (__done__)
-        final Field groupByField = gbfield == NO_GROUPING ? new StringField("", 1) : tup.getField(gbfield);
+        final Field groupByField = gbfield == NO_GROUPING
+                ? new StringField(UUID.randomUUID().toString().replaceAll("_", ""), 32)
+                : tup.getField(gbfield);
         this.aggregateMap.merge(groupByField, 1, Integer::sum);
     }
 
@@ -64,12 +67,16 @@ public class StringAggregator implements Aggregator {
      */
     public DbIterator iterator() {
         // some code goes here (__done__)
+        final TupleDesc tupleDesc = this.gbfield == NO_GROUPING ? new TupleDesc(new Type[] { Type.INT_TYPE })
+                : new TupleDesc(new Type[] { this.gbfieldtype, Type.INT_TYPE });
         return new TupleIterator(new TupleDesc(new Type[] { this.gbfieldtype, Type.INT_TYPE }),
                 this.aggregateMap.entrySet().stream().map(entry -> {
-                    final Tuple tuple = new Tuple(new TupleDesc(
-                            new Type[] { this.gbfieldtype, Type.INT_TYPE }));
-                    tuple.setField(0, entry.getKey());
-                    tuple.setField(1, new IntField(entry.getValue()));
+                    final Tuple tuple = new Tuple(tupleDesc);
+                    int fieldPos = -1;
+                    if (tupleDesc.numFields() == 2) {
+                        tuple.setField(++fieldPos, entry.getKey());
+                    }
+                    tuple.setField(++fieldPos, new IntField(entry.getValue()));
                     return tuple;
                 }).collect(java.util.stream.Collectors.toList()));
     }
