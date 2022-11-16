@@ -1,5 +1,7 @@
 package simpledb;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * Knows how to compute some aggregate over a set of IntFields.
  */
@@ -7,23 +9,37 @@ public class IntegerAggregator implements Aggregator {
 
     private static final long serialVersionUID = 1L;
 
+    private int gbfield;
+    private Type gbfieldtype;
+    private int afield;
+    private Op what;
+
+    private ConcurrentHashMap<Field, Integer[]> aggregateMap;
+
     /**
      * Aggregate constructor
      * 
      * @param gbfield
-     *            the 0-based index of the group-by field in the tuple, or
-     *            NO_GROUPING if there is no grouping
+     *                    the 0-based index of the group-by field in the tuple, or
+     *                    NO_GROUPING if there is no grouping
      * @param gbfieldtype
-     *            the type of the group by field (e.g., Type.INT_TYPE), or null
-     *            if there is no grouping
+     *                    the type of the group by field (e.g., Type.INT_TYPE), or
+     *                    null
+     *                    if there is no grouping
      * @param afield
-     *            the 0-based index of the aggregate field in the tuple
+     *                    the 0-based index of the aggregate field in the tuple
      * @param what
-     *            the aggregation operator
+     *                    the aggregation operator
      */
 
     public IntegerAggregator(int gbfield, Type gbfieldtype, int afield, Op what) {
-        // some code goes here
+        // some code goes here (__done__)
+        this.gbfield = gbfield;
+        this.gbfieldtype = gbfieldtype;
+        this.afield = afield;
+        this.what = what;
+
+        this.aggregateMap = new ConcurrentHashMap<Field, Integer[]>();
     }
 
     /**
@@ -34,7 +50,48 @@ public class IntegerAggregator implements Aggregator {
      *            the Tuple containing an aggregate field and a group-by field
      */
     public void mergeTupleIntoGroup(Tuple tup) {
-        // some code goes here
+        final Field groupByField = gbfield == NO_GROUPING ? new IntField(Integer.MAX_VALUE) : tup.getField(gbfield);
+
+        switch (this.what) {
+            case MIN:
+                this.aggregateMap.merge(groupByField, new Integer[] { ((IntField) tup.getField(afield)).getValue(), 1 },
+                        (Integer[] oldValue, Integer[] newValue) -> {
+                            oldValue[0] = Math.min(oldValue[0], newValue[0]);
+                            oldValue[1] += newValue[1];
+                            return oldValue;
+                        });
+                break;
+            case MAX:
+                this.aggregateMap.merge(groupByField, new Integer[] { ((IntField) tup.getField(afield)).getValue(), 1 },
+                        (Integer[] oldValue, Integer[] newValue) -> {
+                            oldValue[0] = Math.max(oldValue[0], newValue[0]);
+                            oldValue[1] += newValue[1];
+                            return oldValue;
+                        });
+                break;
+            case SUM:
+            case SUM_COUNT:
+            case AVG:
+            case SC_AVG:
+                this.aggregateMap.merge(groupByField, new Integer[] { ((IntField) tup.getField(afield)).getValue(), 1 },
+                        (Integer[] oldValue,
+                                Integer[] newValue) -> {
+                            oldValue[0] += newValue[0];
+                            oldValue[1] += newValue[1];
+                            return oldValue;
+                        });
+                break;
+            case COUNT:
+                this.aggregateMap.merge(groupByField, new Integer[] { 1, 1 },
+                        (Integer[] oldValue, Integer[] newValue) -> {
+                            oldValue[0] += newValue[0];
+                            oldValue[1] += newValue[1];
+                            return oldValue;
+                        });
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + this.what);
+        }
     }
 
     /**
@@ -46,9 +103,23 @@ public class IntegerAggregator implements Aggregator {
      *         the constructor.
      */
     public DbIterator iterator() {
-        // some code goes here
-        throw new
-        UnsupportedOperationException("please implement me for lab3");
-    }
+        // some code goes here (__done__)
+        final TupleDesc tupleDesc = this.gbfield == NO_GROUPING ? new TupleDesc(new Type[] { Type.INT_TYPE })
+                : new TupleDesc(new Type[] { this.gbfieldtype, Type.INT_TYPE });
 
+        return new TupleIterator(tupleDesc,
+                this.aggregateMap.entrySet().stream().map(entry -> {
+                    final Tuple tuple = new Tuple(tupleDesc);
+                    int fieldPos = -1;
+                    if (tupleDesc.numFields() == 2) {
+                        tuple.setField(++fieldPos, entry.getKey());
+                    }
+                    if (this.what == Op.AVG) {
+                        tuple.setField(++fieldPos, new IntField(entry.getValue()[0] / entry.getValue()[1]));
+                    } else {
+                        tuple.setField(++fieldPos, new IntField(entry.getValue()[0]));
+                    }
+                    return tuple;
+                }).collect(java.util.stream.Collectors.toList()));
+    }
 }
