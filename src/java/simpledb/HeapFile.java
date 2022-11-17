@@ -131,23 +131,30 @@ public class HeapFile implements DbFile {
     	// iterate through pages of file to find one with empty space 
     	for (int pgno = 0; pgno < numPages(); pgno++) {
     		HeapPageId pid = new HeapPageId(this.tableid, pgno);
-    		HeapPage currPage  = (HeapPage) Database.getBufferPool().getPage(tid, pid, Permissions.READ_ONLY);
+    		HeapPage currPage  = (HeapPage) Database.getBufferPool().getPage(tid, pid, Permissions.READ_WRITE);
     		if (currPage.getNumEmptySlots() > 0) {
-    			availPage = (HeapPage) Database.getBufferPool().getPage(tid, pid, Permissions.READ_WRITE);
-    			availPage.insertTuple(t);
-    			modifiedPages.add(availPage);
-    			break;
+//    			availPage = (HeapPage) Database.getBufferPool().getPage(tid, pid, Permissions.READ_WRITE);
+    			currPage.insertTuple(t);
+    			modifiedPages.add(currPage);
+    			return modifiedPages;
     		}
     	}
     	
-    	if (availPage == null) {
-    		HeapPageId newPageId = new HeapPageId(this.getId(), this.numPages());
+    	synchronized(this) {
+    		BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(f, true));
+    		byte[] emptyData = HeapPage.createEmptyPageData();
+    		bw.write(emptyData);
+    		bw.close();
+    	}
+    	
+    	HeapPageId newPageId = new HeapPageId(this.getId(), this.numPages()-1);
 //            HeapPage newPage = (HeapPage)Database.getBufferPool().getPage(tid, newPageId, Permissions.READ_WRITE);
 //            newPage.insertTuple(t);
 //            modifiedPages.add(newPage);
-            HeapPage newHeapPage = new HeapPage(newPageId, HeapPage.createEmptyPageData());
-            newHeapPage.insertTuple(t);
-    	}
+        HeapPage newHeapPage = (HeapPage) Database.getBufferPool().getPage(tid, newPageId, Permissions.READ_WRITE);
+        newHeapPage.insertTuple(t);
+        modifiedPages.add(newHeapPage);
+  
     
         return modifiedPages;
         // not necessary for lab1|lab2
