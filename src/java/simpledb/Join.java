@@ -9,6 +9,7 @@ public class Join extends Operator {
 	
 	private JoinPredicate p;
 	private DbIterator child1, child2;
+	private Tuple t1;
 	
     private static final long serialVersionUID = 1L;
 
@@ -108,24 +109,36 @@ public class Join extends Operator {
      */
     protected Tuple fetchNext() throws TransactionAbortedException, DbException {
         // some code goes here
-    	while (child1.hasNext()) {
-    		Tuple t1 = child1.next();
+    	while (child1.hasNext() || t1 != null) {
+//    		Tuple t1 = child1.next();
+    		if (t1 == null) {
+    			assert(child1.hasNext());
+    			t1 = child1.next();
+    		}
+    		
     		while (child2.hasNext()) {
     			Tuple t2 = child2.next();
+    			// determine if two provided tuples fulfill predicate 
     			if(p.filter(t1, t2)) {
     				TupleDesc joinedTD = getTupleDesc();
     				Tuple joinedTuple = new Tuple(joinedTD);
     				int t1_size = t1.getTupleDesc().numFields();
     				int t2_size = t2.getTupleDesc().numFields();
+    				
+    				// populate new tuple with contents of l and r tuple
     				for (int i=0; i < t1_size; i++) {
     					joinedTuple.setField(i, t1.getField(i));
     				}
     				for (int j=0; j < t2_size; j++) {
     					joinedTuple.setField(t1_size+j, t2.getField(j));
     				}
+    				
+    				System.out.println("joinedTuple: " + joinedTuple);
+    			
     				return joinedTuple;
     			}
     		}
+    		t1 = null;
     		child2.rewind();
     		
     	}
