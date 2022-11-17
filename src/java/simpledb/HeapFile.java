@@ -126,7 +126,6 @@ public class HeapFile implements DbFile {
             throws DbException, IOException, TransactionAbortedException {
         // some code goes here
     	ArrayList<Page> modifiedPages = new ArrayList<Page>();
-    	HeapPage availPage = null;
     	
     	// iterate through pages of file to find one with empty space 
     	for (int pgno = 0; pgno < numPages(); pgno++) {
