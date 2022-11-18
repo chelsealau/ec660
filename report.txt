@@ -1,27 +1,39 @@
 ﻿Design Decisions
-Eviction Policy
-
-
-The most significant design decision that was made was the page eviction policy implemented in the evictPage() method in BufferPool.java. We chose to generate a random number between 0 and the number of pages in the buffer pool. All keys (pids) in the buffer pool were inserted into a list, and the random generated number was used to select the key (pid) and its corresponding page to be evicted. Other than this decision there were no other significant design decisions since skeleton methods were being populated.
-
-
-Insertion and Deletion
-Splitting leaf nodes was much simpler than splitting internal pages as there aren’t as many pointers to keep track of and the positioning of nodes. For Leaf Pages, it was as simple as dividing the number of tuples in half and distributing them among the two new pages using the reverseIterator. Once this was done, it was a matter of checking for an existing right page and updating the sibling pointers respectively.
-
-
-For the internal pages, the process was similar, however, we needed to adjust for even and odd number of entries as this effected an even split for the nodes. Otherwise, the process was identical to the leaf node splitting without the sibling pointer updates.
+Describe any design decisions you made with a little more details. If you used something other than a nested-loops join, describe the tradeoffs of the algorithm you chose.
+* Nested-loops join was chosen for Join.java
+* IntegerAggregator
+   * Aggregation was performed using hashing due to its inherent grouping nature. When the aggregation field is hashed (assuming a good hash function and no collisions) each value gets automatically put into its own corresponding bucket.
+   * Through this grouping mechanism, aggregate functions were calculated in-place, updated on every insert (except for AVG: read more in the “Changes to API” section).
+* StringAggregator
+   * Aggregation was performed using hashing due to the aforementioned reasons. Because strings only support the COUNT aggregation function, the hash value was only a single integer corresponding to the number of tuples inserted, updated on every insert.
+* Other than that not really any other design decisions - simple, straightforward implementations of skeleton methods
 Changes to API
-No changes were made to the API. 
-Missing/Incomplete Elements of Code
+HashEquiJoin
+* loadMap() was added as a helper method for the fetchNext() function. It populates a hashmap using the tuples read by child1 on the appropriate join column.
+* listProcess() was added as another helper method for fetchNext() to create the new joined tuples and populate them with the values extracted from the two tuples being joined. 
+Aggregators:
+* Aggregation was performed using a ConcurrentHashmap where the value side consisted either of a two-element integer array or single integer.
+* For IntegerAggregator
+   * The first element consisted of the aggregation function value (min, max, sum, count)
+   * The second element consisted of the number of tuples constituting this bucket, which is necessary to compute average.
+   * If the operation was AVG, the value would be lazily computed, returning the value only when an iterator accessed the corresponding tuple
+* For StringAggregator
+   * The only value was a single integer corresponding to the number of tuples.
 
 
-There are no missing/incomplete elements of code besides the skeleton methods that were not required for this lab. BTreeFile.stealFromLeafPage() and BTreeFile.mergeLeafPages()(the bonus questions) were not implemented.
 
 
-While there is no missing code, unfortunately, the implementation of splitInternalPage is not 100% functional on the systemtests. Small bugs evaded a solution this time.
-Length Project Took and Difficulties 
-We worked on this project for approximately 1 week, but there were no parts we found particularly difficult or confusing for this set of tasks, despite not being able to figure out the splitInternalPage bug.
+Describe any missing or incomplete elements of your code.
 
 
-Division of Workload 
-Chelsea completed exercises 1 and 2, which was implementing flushPage() and its helper methods, implementing the findLeafPage() method, and the skeleton methods in Predicate.java and IndexPredicate.java. Cameron completed exercise 3 which consisted of implementing BTreeFile.splitLeafPage() and BTreeFile.splitInternalPage().
+There are no missing or incomplete parts to our code.
+Describe how long you spent on the assignment, and whether there was anything you found particularly difficult or confusing.
+
+
+We spent roughly a week on the assignment and found the joins to be the most difficult aspect of this assignment. HashEquiJoin in particular was the more confusing to implement between the two, since it required the extra step of loading a map.
+
+
+If you collaborate with someone else, you have to describe how you split the workload.
+
+
+Cameron did Exercise 2 and Chelsea did Exercises 1, 3, and 4.
