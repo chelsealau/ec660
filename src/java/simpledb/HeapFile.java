@@ -164,16 +164,13 @@ public class HeapFile implements DbFile {
             TransactionAbortedException {
         // some code goes here
     	ArrayList<Page> modifiedPages = new ArrayList<Page>();
-    	HeapFileIterator it = (HeapFileIterator) iterator(tid);
-    	while (it.hasNext()) {
-    		Tuple currTup = it.next();
-    		if (currTup.equals(t)) {
-    			HeapPageId pid = (HeapPageId) currTup.getRecordId().getPageId();
-    			HeapPage matchPage = (HeapPage) Database.getBufferPool().getPage(tid, pid, Permissions.READ_WRITE);
-    			matchPage.deleteTuple(t);
-    			modifiedPages.add(matchPage);
-    		}
-    	}
+    	BufferPool bp = Database.getBufferPool();
+    	RecordId rid = t.getRecordId();
+    	PageId pid = rid.getPageId();
+    	HeapPage page = (HeapPage) bp.getPage(tid, pid, Permissions.READ_WRITE);
+    	page.deleteTuple(t);
+    	modifiedPages.add(page);
+
         return modifiedPages;
         // not necessary for lab1|lab2
     }
