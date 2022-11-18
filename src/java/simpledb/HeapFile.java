@@ -172,7 +172,6 @@ public class HeapFile implements DbFile {
     			HeapPage matchPage = (HeapPage) Database.getBufferPool().getPage(tid, pid, Permissions.READ_WRITE);
     			matchPage.deleteTuple(t);
     			modifiedPages.add(matchPage);
-    			break;
     		}
     	}
         return modifiedPages;
