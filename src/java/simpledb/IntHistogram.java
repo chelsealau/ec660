@@ -3,6 +3,12 @@ package simpledb;
 /** A class to represent a fixed-width histogram over a single integer-based field.
  */
 public class IntHistogram {
+	private int m_min, m_max;
+	private int numB; // tot num of buckets
+	private int ntups; // total num of tuples
+	private int h_b; // height of bucket
+	private int w_b; // width of bucket
+	private int[] hist; // stores number of values in each bucket
 
     /**
      * Create a new IntHistogram.
@@ -22,6 +28,13 @@ public class IntHistogram {
      */
     public IntHistogram(int buckets, int min, int max) {
     	// some code goes here
+    	this.numB = buckets;
+    	this.m_min = min;
+    	this.m_max = max;
+    	this.ntups = 0;
+    	// calculate width of bucket 
+    	this.w_b = (int) Math.ceil((double) (max-min+1)/buckets); 
+    	this.hist = new int[buckets];
     }
 
     /**
@@ -30,6 +43,24 @@ public class IntHistogram {
      */
     public void addValue(int v) {
     	// some code goes here
+    	
+    	// determine which bucket value belongs to
+    	if ((m_min > v) || (v > m_max)) {
+    		return;
+    	}
+    	int b = (v == m_max) ? (numB - 1) : (v - m_min)/w_b;
+        hist[b]++; 
+        ntups++;
+    }
+    
+    // helper method to calculate sum of values in buckets starting from start_b to end_b
+    private int calcSum(int start_b, int end_b) {
+    	int sum = 0;
+    	for (int i = start_b; i < end_b; i++) {
+    		sum += hist[i];
+    	}
+    	
+    	return sum;
     }
 
     /**
@@ -45,7 +76,66 @@ public class IntHistogram {
     public double estimateSelectivity(Predicate.Op op, int v) {
 
     	// some code goes here
-        return -1.0;
+
+    	double selectivity = 0.0;
+    	int b = (v == m_max) ? (numB - 1) : (v - m_min)/w_b;
+    	
+    	h_b = (v >= m_min && v < m_max) ? hist[b] : 0;
+    	
+    	double b_f = (double) h_b/ntups;
+    	int b_right = (b + 1)*w_b + m_min;
+    	int b_left = b*w_b + m_min;
+    	double b_part = 0.0;
+    	
+    	switch(op) {
+    		case EQUALS:
+    			selectivity = (double) (h_b/w_b)/ntups; // CAN REPLACE WITH B_F
+    			break;
+    		case NOT_EQUALS:
+    			selectivity = 1.0 - (double) (h_b/w_b)/ntups; // CAN REPLACE WITH B_F
+    			break;
+    		case GREATER_THAN_OR_EQ:
+    			if (m_min > v) {
+    	    		return 1.0;
+    	    	} else if (v > m_max) {
+    	    		return 0.0;
+    	    	}
+    			b_part = (b_right - v + 1)/w_b;
+    			selectivity = b_part*b_f + (double) calcSum(b+1,numB)/ntups;
+    			break;
+    		case GREATER_THAN:
+    			if (m_min > v) {
+    	    		return 1.0;
+    	    	} else if (v > m_max) {
+    	    		return 0.0;
+    	    	}
+    			
+    			b_part = (b_right - v)/w_b;
+    			selectivity = b_part*b_f + (double) calcSum(b+1,numB)/ntups;
+    			break;
+    		case LESS_THAN_OR_EQ:
+    			if (m_min > v) {
+    	    		return 0.0;
+    	    	} else if (v > m_max) {
+    	    		return 1.0;
+    	    	}
+    			
+    			b_part = (v - b_left + 1)/w_b;
+    			selectivity = b_part*b_f + (double) calcSum(0,b)/ntups;
+    			break;
+    		case LESS_THAN:
+    			if (m_min > v) {
+    	    		return 0.0;
+    	    	} else if (v > m_max) {
+    	    		return 1.0;
+    	    	}
+    			
+    			b_part = (v - b_left)/w_b;
+    			selectivity = b_part*b_f + (double) calcSum(0,b)/ntups;
+    			break;
+    		
+    	}
+        return selectivity;
     }
     
     /**
