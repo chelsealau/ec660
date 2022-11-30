@@ -95,9 +95,9 @@ public class IntHistogram {
     			selectivity = 1.0 - (double) (h_b/w_b)/ntups; // CAN REPLACE WITH B_F
     			break;
     		case GREATER_THAN_OR_EQ:
-    			if (m_min > v) {
+    			if (m_min >= v) {
     	    		return 1.0;
-    	    	} else if (v > m_max) {
+    	    	} else if (v >= m_max) {
     	    		return 0.0;
     	    	}
     			b_part = (b_right - v + 1)/w_b;
@@ -114,9 +114,9 @@ public class IntHistogram {
     			selectivity = b_part*b_f + (double) calcSum(b+1,numB)/ntups;
     			break;
     		case LESS_THAN_OR_EQ:
-    			if (m_min > v) {
+    			if (m_min >= v) {
     	    		return 0.0;
-    	    	} else if (v > m_max) {
+    	    	} else if (v >= m_max) {
     	    		return 1.0;
     	    	}
     			
