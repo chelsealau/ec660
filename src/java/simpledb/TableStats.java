@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * TableStats represents statistics (e.g., histograms) about base tables in a
- * query. 
+ * query.
  * 
  * This class is not needed in implementing lab1, lab2 and lab3.
  */
@@ -24,9 +24,8 @@ public class TableStats {
     public static void setTableStats(String tablename, TableStats stats) {
         statsMap.put(tablename, stats);
     }
-    
-    public static void setStatsMap(HashMap<String,TableStats> s)
-    {
+
+    public static void setStatsMap(HashMap<String, TableStats> s) {
         try {
             java.lang.reflect.Field statsMapF = TableStats.class.getDeclaredField("statsMap");
             statsMapF.setAccessible(true);
@@ -77,10 +76,11 @@ public class TableStats {
      * column of a table
      * 
      * @param tableid
-     *            The table over which to compute statistics
+     *                      The table over which to compute statistics
      * @param ioCostPerPage
-     *            The cost per page of IO. This doesn't differentiate between
-     *            sequential-scan IO and disk seeks.
+     *                      The cost per page of IO. This doesn't differentiate
+     *                      between
+     *                      sequential-scan IO and disk seeks.
      */
     public TableStats(int tableid, int ioCostPerPage) {
         // For this function, you'll have to get the
@@ -96,9 +96,9 @@ public class TableStats {
         if (!(f instanceof HeapFile)) {
             basePages = 0;
             baseTups = 0;
-            this.costPerPageIO=ioCostPerPage;
-            histograms=null;
-            mins=maxs=null;
+            this.costPerPageIO = ioCostPerPage;
+            histograms = null;
+            mins = maxs = null;
             return;
         }
 
@@ -186,7 +186,7 @@ public class TableStats {
     public double estimateScanCost() {
         // some code goes here
         return basePages * costPerPageIO;
-        //return 0;
+        // return 0;
     }
 
     /**
@@ -194,26 +194,30 @@ public class TableStats {
      * predicate with selectivity selectivityFactor is applied.
      * 
      * @param selectivityFactor
-     *            The selectivity of any predicates over the table
+     *                          The selectivity of any predicates over the table
      * @return The estimated cardinality of the scan with the specified
      *         selectivityFactor
      */
     public int estimateTableCardinality(double selectivityFactor) {
         // some code goes here
         return (int) (baseTups * selectivityFactor);
-        //return 0;
+        // return 0;
     }
 
     /**
      * The average selectivity of the field under op.
+     * 
      * @param field
-     *        the index of the field
+     *              the index of the field
      * @param op
-     *        the operator in the predicate
-     * The semantic of the method is that, given the table, and then given a
-     * tuple, of which we do not know the value of the field, return the
-     * expected selectivity. You may estimate this value from the histograms.
-     * */
+     *              the operator in the predicate
+     *              The semantic of the method is that, given the table, and then
+     *              given a
+     *              tuple, of which we do not know the value of the field, return
+     *              the
+     *              expected selectivity. You may estimate this value from the
+     *              histograms.
+     */
     public double avgSelectivity(int field, Predicate.Op op) {
         // some code goes here
         if (op == Predicate.Op.EQUALS) {
@@ -234,11 +238,11 @@ public class TableStats {
      * table.
      * 
      * @param field
-     *            The field over which the predicate ranges
+     *                 The field over which the predicate ranges
      * @param op
-     *            The logical operation in the predicate
+     *                 The logical operation in the predicate
      * @param constant
-     *            The value against which the field is compared
+     *                 The value against which the field is compared
      * @return The estimated selectivity (fraction of tuples that satisfy) the
      *         predicate
      */
@@ -248,15 +252,15 @@ public class TableStats {
                 IntHistogram hist = (IntHistogram) histograms[field];
                 double sel = hist.estimateSelectivity(op,
                         ((IntField) constant).getValue());
-//                System.out.println("SELECTIVITY OF PREDICATE " + field + " "
-//                        + op + " " + constant + " IS " + sel);
+                // System.out.println("SELECTIVITY OF PREDICATE " + field + " "
+                // + op + " " + constant + " IS " + sel);
                 return sel;
             } else {
                 StringHistogram hist = (StringHistogram) histograms[field];
                 double sel = hist.estimateSelectivity(op,
                         ((StringField) constant).getValue());
-//                System.out.println("SELECTIVITY OF PREDICATE " + field + " "
-//                        + op + " " + constant + " IS " + sel);
+                // System.out.println("SELECTIVITY OF PREDICATE " + field + " "
+                // + op + " " + constant + " IS " + sel);
 
                 return sel;
             }
@@ -266,11 +270,11 @@ public class TableStats {
 
     /**
      * return the total number of tuples in this table
-     * */
+     */
     public int totalTuples() {
         // some code goes here
         return this.baseTups;
-    
+
     }
 
 }
