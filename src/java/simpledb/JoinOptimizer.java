@@ -260,17 +260,13 @@ public class JoinOptimizer {
         PlanCache generatedPlans = new PlanCache();
 
         // save the overall set for later retrieval
-        Set<LogicalJoinNode> finalSet = null;
-
+        Set<LogicalJoinNode> bestSet = null;
+        CostCard bestCostCard = null;
         // iterate over all subsets
         int sizeOfJoins = this.joins.size();
         for (int i = 1; i <= sizeOfJoins; i++) {
             Set<Set<LogicalJoinNode>> enumSubsets = enumerateSubsets(joins, i);
             for (Set<LogicalJoinNode> subset : enumSubsets) {
-                if (i == sizeOfJoins) {
-                    finalSet = subset;
-                }
-
                 CostCard currBest = null;
                 for (LogicalJoinNode j : subset) {
                     CostCard result = null;
@@ -287,6 +283,11 @@ public class JoinOptimizer {
                                 generatedPlans);
                     }
                     currBest = result != null ? result : currBest;
+
+                    if (currBest.cost < bestCostCard.cost) {
+                        bestCostCard = currBest;
+                        bestSet = subset;
+                    }
                 }
                 if (currBest == null) {
                     // no plan found for this subset
@@ -297,7 +298,7 @@ public class JoinOptimizer {
             }
         }
 
-        Vector<LogicalJoinNode> bestJoin = generatedPlans.getOrder(finalSet);
+        Vector<LogicalJoinNode> bestJoin = generatedPlans.getOrder(bestSet);
 
         // helper to print out what the best join and best plans were
         if (explain) {
