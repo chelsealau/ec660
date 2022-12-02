@@ -261,7 +261,6 @@ public class JoinOptimizer {
 
         // save the overall set for later retrieval
         Set<LogicalJoinNode> bestSet = null;
-        CostCard bestCostCard = null;
         // iterate over all subsets
         int sizeOfJoins = this.joins.size();
         for (int i = 1; i <= sizeOfJoins; i++) {
@@ -270,6 +269,10 @@ public class JoinOptimizer {
                 CostCard currBest = null;
                 for (LogicalJoinNode j : subset) {
                     CostCard result = null;
+                    if (i == sizeOfJoins) {
+                        bestSet = subset;
+                    }
+
                     if (currBest == null) {
                         // no current best cost, use the maximum value so the first plan will become the
                         // best
@@ -283,11 +286,6 @@ public class JoinOptimizer {
                                 generatedPlans);
                     }
                     currBest = result != null ? result : currBest;
-
-                    if (currBest.cost < bestCostCard.cost) {
-                        bestCostCard = currBest;
-                        bestSet = subset;
-                    }
                 }
                 if (currBest == null) {
                     // no plan found for this subset
