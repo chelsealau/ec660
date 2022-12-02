@@ -1,39 +1,44 @@
-﻿Design Decisions
-Describe any design decisions you made with a little more details. If you used something other than a nested-loops join, describe the tradeoffs of the algorithm you chose.
-* Nested-loops join was chosen for Join.java
-* IntegerAggregator
-   * Aggregation was performed using hashing due to its inherent grouping nature. When the aggregation field is hashed (assuming a good hash function and no collisions) each value gets automatically put into its own corresponding bucket.
-   * Through this grouping mechanism, aggregate functions were calculated in-place, updated on every insert (except for AVG: read more in the “Changes to API” section).
-* StringAggregator
-   * Aggregation was performed using hashing due to the aforementioned reasons. Because strings only support the COUNT aggregation function, the hash value was only a single integer corresponding to the number of tuples inserted, updated on every insert.
-* Other than that not really any other design decisions - simple, straightforward implementations of skeleton methods
+﻿PA4
+Design Decisions
+
+
+Estimate Selectivity:
+* Different formulas for calculating selectivity were used depending on the predicate and chosen through a switch case statement 
+* The formulas were drawn from the provided documentation 
+* This method supports the following operators: 
+   * EQUALS
+   * NOT EQUALS
+   * GREATER THAN
+   * GREATER THAN OR EQUAL TO 
+   * LESS THAN
+   * LESSER THAN OR EQUAL TO 
+
+
+Join Ordering:
+* Join ordering was relatively simple, making heavy use of the provided helper functions, `enumerateSubsets`, and `computeCostAndCardOfSubplan`.
+* The `orderJoins` function is essentially a linear maximum search through each of the possible enumerated sets, provided via the `enumerateSubsets` function. For each subset, and for each node inside that subset, use `computeCostAndCardOfSubplan` to find the lowest cost among all the `LogicalJoinNodes`. 
+* Once the lowest cost has been found for a subset, it gets added to the `PlanCache` to find the best overall subset and checked against the global minimum cost it has found.
 Changes to API
-HashEquiJoin
-* loadMap() was added as a helper method for the fetchNext() function. It populates a hashmap using the tuples read by child1 on the appropriate join column.
-* listProcess() was added as another helper method for fetchNext() to create the new joined tuples and populate them with the values extracted from the two tuples being joined. 
-Aggregators:
-* Aggregation was performed using a ConcurrentHashmap where the value side consisted either of a two-element integer array or single integer.
-* For IntegerAggregator
-   * The first element consisted of the aggregation function value (min, max, sum, count)
-   * The second element consisted of the number of tuples constituting this bucket, which is necessary to compute average.
-   * If the operation was AVG, the value would be lazily computed, returning the value only when an iterator accessed the corresponding tuple
-* For StringAggregator
-   * The only value was a single integer corresponding to the number of tuples.
+IntHistogram:
+* A calcSum() method was added as a helper method for estimateSelectivity 
+* It serves to calculate the sum of the number of values in each bucket within a range
+   * For instance, to calculate the number of values greater than value v, calcSum() was used to calculate the number of values in buckets b+1 to numB, with b being the bucket v was in and numB being the total number of buckets 
 
 
+Join Cost Estimation:
+* No changes to the API were made
+Join Ordering
+* No changes to the API were made
 
 
 Describe any missing or incomplete elements of your code.
+There are no missing or incomplete elements of our code
 
 
-There are no missing or incomplete parts to our code.
 Describe how long you spent on the assignment, and whether there was anything you found particularly difficult or confusing.
+We worked on this project for about a week.
 
 
-We spent roughly a week on the assignment and found the joins to be the most difficult aspect of this assignment. HashEquiJoin in particular was the more confusing to implement between the two, since it required the extra step of loading a map.
-
-
+Join cost estimation, join ordering, and table statistics were not particularly difficult as the assignment description was very helpful in describing the optimizer’s configuration, pseudocode, and example cost estimations. 
 If you collaborate with someone else, you have to describe how you split the workload.
-
-
-Cameron did Exercise 2 and Chelsea did Exercises 1, 3, and 4.
+Cameron did exercises 3 and 4 and Chelsea did exercises 1 and 2.
